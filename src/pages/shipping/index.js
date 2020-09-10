@@ -107,7 +107,7 @@ export default function () {
         <View className='info-item'>
           <AtIcon value='map-pin' size='18' color='#4FC469' />
           <View className='content' onClick={sendAddress}>
-            <Text className='title'>{location.to.address || '发货地址'}</Text>
+            <Text className='title'>{location.from.address || '发货地址'}</Text>
           </View>
         </View>
         <View className='info-item'>

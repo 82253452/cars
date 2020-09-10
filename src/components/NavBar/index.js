@@ -29,8 +29,9 @@ export default function ({title = '', fixed = true, home = false, back = false, 
     <View className={`nav-con ${fixed && 'nav-fixed'}`} style={{height: `${bottom + BOTTOM_GAP}px`}}>
       <View className='nav' style={{height: `${height + BOTTOM_GAP}px`}}>
         <View className={`${(home || back) && 'icon'}`} style={{width: `${width}px`, marginLeft: `calc(100% - ${right}px)`,height:`${height}px`}}>
-          {(home || back) && <Image onClick={_back} style={{width: '17rpx', height: '29rpx'}} src={backIcon} />}
-          {(home || back) && <Image onClick={_home} style={{width: '30rpx', height: '30rpx'}} src={homeIcon} />}
+          {(home || back) && <View className='button' onClick={_back}><Image style={{width: '17rpx', height: '29rpx'}} src={backIcon} /></View>}
+          {(home || back) && <View className='line' />}
+          {(home || back) && <View className='button' onClick={_home} ><Image style={{width: '30rpx', height: '30rpx'}} src={homeIcon} /></View>}
         </View>
         <View className='title' style={{width: `${right - width * 2}px`,height:`${height}px`}}>
           <Text>{title}</Text>
