@@ -5,7 +5,7 @@ import {useQuery} from "@/react-query/react";
 import {APP_ID} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {dateFormat} from "@/utils/utils";
-import {Button, Map, Text, View} from '@tarojs/components'
+import {Button, CoverImage, CoverView, Map, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
 import React, {useCallback} from 'react'
 import {useDispatch, useSelector} from "react-redux";
@@ -93,13 +93,36 @@ export default function () {
       {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
         <View className='header'>
           <Text className='name'>{d.title}</Text>
-          <Text className='province'>date</Text>
+          <Text className='province'>{d.userName}</Text>
         </View>
-        <View>
-          <Map className='map' scale={8} setting={setting} enableZoom={false} enableScroll={false} longitude={116.584217}
-            latitude={39.896117}
-          />
-        </View>
+          <View className='c-map'>
+            <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false} longitude={d.latitudeFrom} latitude={d.longitudeFrom}
+              polyline={[{
+                   points: [{
+                     latitude: d.latitudeFrom,
+                     longitude: d.longitudeFrom,
+                   }, {
+                     latitude: d.latitudeTo,
+                     longitude: d.longitudeTo,
+                   }],
+                   width: 5,
+                   color: '#4FC469',
+                 }]}
+              markers={[{
+                latitude: d.latitudeFrom,
+                longitude: d.longitudeFrom,
+                label: {
+                  content: '起点'
+                }
+              }, {
+                latitude: d.latitudeTo,
+                longitude: d.longitudeTo,
+                label: {
+                  content: '终点'
+                }
+              }]}
+            />
+          </View>
         <View className='detail'>
           <View className='line'>
             <AtIcon value='tag' size='20' color='#CAC9CE' />
@@ -107,11 +130,11 @@ export default function () {
           </View>
           <View className='line'>
             <AtIcon value='phone' size='20' color='#CAC9CE' />
-            <Text className='line_text'>15901320019</Text>
+            <Text className='line_text'>{d.phone}</Text>
           </View>
           <View className='line'>
             <AtIcon value='list' size='20' color='#CAC9CE' />
-            <Text className='line_text'>浙江大挂</Text>
+            <Text className='line_text'>{d.addressFrom}</Text>
           </View>
         </View>
       </View>) : <View />}
