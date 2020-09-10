@@ -15,7 +15,7 @@ export default function () {
   const {data = {list: []}} = useQuery(CAR_LIST, () => request(CAR_LIST))
 
   function toShipping(d) {
-    Taro.navigateTo({url: '/pages/detail/index?id=' + d.id})
+    Taro.navigateTo({url: '/pages/shipping/index?id=' + d.id})
   }
 
   const CarItem = () => {
@@ -36,11 +36,8 @@ export default function () {
     <View className='index'>
       <NavBar title='物流' />
       <Swiper
-        className='test-h'
-        indicatorColor='#999'
-        indicatorActiveColor='#333'
+        className='swiper'
         circular
-        indicatorDots
         autoplay
       >
         <SwiperItem>

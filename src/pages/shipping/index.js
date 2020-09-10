@@ -26,29 +26,54 @@ export default function () {
     },
     from: {
       latitude: 39.90469,
-      longitude: 116.40717
+      longitude: 116.40717,
+      label: {
+        content: '起点'
+      }
     },
     to: {
       latitude: 19.90469,
-      longitude: 176.40717
+      longitude: 176.40717,
+      label: {
+        content: '终点'
+      }
     }
   })
-  useEffectOnce(() => {
-    Taro.getLocation({type: 'wgs84'}).then(res => setloction({...location, marker: res}))
-  })
+
   const {params} = useRouter()
-  const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect,[]);
+  const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect, []);
+
+  useEffectOnce(() => {
+    Taro.getLocation({type: 'wgs84'}).then(res => setloction({
+      ...location, marker: {
+        ...res, label: {
+          content: '我的位置'
+        }
+      }
+    }))
+  })
 
   function sendAddress() {
     Taro.chooseLocation().then(res => {
-      console.log(res)
-      setloction({...location, from: res})
+      setloction({
+        ...location, from: {
+          ...res, label: {
+            content: '起点'
+          }
+        }
+      })
     })
   }
 
   function receiveAddress() {
     Taro.chooseLocation().then(res => {
-      setloction({...location, to: res})
+      setloction({
+        ...location, to: {
+          ...res, label: {
+            content: '终点'
+          }
+        }
+      })
     })
   }
 
@@ -57,8 +82,13 @@ export default function () {
       <NavBar back home title='发货' />
       <View style={{height: `calc(100vh - 450rpx - ${bottom + BOTTOM_GAP}px)`}}>
         <Map className='map' scale={12} latitude={location.marker.latitude} longitude={location.marker.longitude}
-          polyline={[{points: [location.from, location.to], width: 5, color: '#4FC469'}]}
-          markers={[location.marker]}
+          polyline={[{
+               points: [location.marker, location.from],
+               width: 5,
+               color: '#999',
+               dottedLine: true
+             }, {points: [location.from, location.to], width: 5, color: '#4FC469'}]}
+          markers={[location.marker, location.from, location.to]}
         />
       </View>
       <View className='info'>
