@@ -1,0 +1,50 @@
+.index {
+  flex-direction: column;
+  width: 100%;
+
+  .map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .info {
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .info-header {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 20px;
+        .title {
+          font-size: 32px;
+          font-weight: bold;
+        }
+
+        .desc {
+          font-size: 30px;
+          color: #999;
+        }
+      }
+    }
+
+    .info-button {
+      background-color: #4FC469;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+
+}
+
