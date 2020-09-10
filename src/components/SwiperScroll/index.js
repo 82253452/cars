@@ -2,7 +2,7 @@ import NavBar from '@/components/NavBar'
 import {BOTTOM_GAP} from "@/utils/Const";
 import {Swiper, SwiperItem, Text, View} from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import useUpdateEffect from "react-use/lib/useUpdateEffect";
 import './index.less'
@@ -14,8 +14,8 @@ export default function ({
                            renderItem
                          }) {
 
-  const {windowHeight} = Taro.getSystemInfoSync()
-  const {top, right, bottom} = Taro.getMenuButtonBoundingClientRect();
+  const {windowHeight} = useMemo(Taro.getSystemInfoSync,[]);
+  const {bottom,right,top} = useMemo(Taro.getMenuButtonBoundingClientRect,[]);
 
   const viewHeight = windowHeight - bottom - BOTTOM_GAP
   const [current, setCurrent] = useState(0)

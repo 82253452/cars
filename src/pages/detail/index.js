@@ -6,7 +6,7 @@ import {request} from "@/utils/request";
 import {Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React from 'react'
+import React, {useMemo} from 'react'
 import {AtIcon} from "taro-ui";
 
 import './index.less'
@@ -15,7 +15,7 @@ export default function () {
 
   console.log('detail')
   const {params} = useRouter()
-  const {bottom} = Taro.getMenuButtonBoundingClientRect();
+  const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect,[]);
 
   const {data = {}} = useQuery([ORDER_DETAIL, params.id], () => request(ORDER_DETAIL, {id: params.id}))
 

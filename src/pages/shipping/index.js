@@ -6,7 +6,7 @@ import {request} from "@/utils/request";
 import {Input, Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import {AtIcon} from "taro-ui";
 
@@ -37,7 +37,7 @@ export default function () {
     Taro.getLocation({type: 'wgs84'}).then(res => setloction({...location, marker: res}))
   })
   const {params} = useRouter()
-  const {bottom} = Taro.getMenuButtonBoundingClientRect();
+  const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect,[]);
 
   function sendAddress() {
     Taro.chooseLocation().then(res => {

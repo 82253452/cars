@@ -96,7 +96,7 @@ export default function () {
           <Text className='province'>date</Text>
         </View>
         <View>
-          <Map className='map' setting={setting} enableZoom={false} enableScroll={false} longitude={116.584217}
+          <Map className='map' scale={8} setting={setting} enableZoom={false} enableScroll={false} longitude={116.584217}
             latitude={39.896117}
           />
         </View>
