@@ -95,34 +95,35 @@ export default function () {
           <Text className='name'>{d.title}</Text>
           <Text className='province'>{d.userName}</Text>
         </View>
-          <View className='c-map'>
-            <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false} longitude={d.latitudeFrom} latitude={d.longitudeFrom}
-              polyline={[{
-                   points: [{
-                     latitude: d.latitudeFrom,
-                     longitude: d.longitudeFrom,
-                   }, {
-                     latitude: d.latitudeTo,
-                     longitude: d.longitudeTo,
-                   }],
-                   width: 5,
-                   color: '#4FC469',
-                 }]}
-              markers={[{
-                latitude: d.latitudeFrom,
-                longitude: d.longitudeFrom,
-                label: {
-                  content: '起点'
-                }
-              }, {
-                latitude: d.latitudeTo,
-                longitude: d.longitudeTo,
-                label: {
-                  content: '终点'
-                }
-              }]}
-            />
-          </View>
+        <View className='c-map'>
+          <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
+            latitude={d.latitudeFrom} longitude={d.longitudeFrom}
+            polyline={[{
+                 points: [{
+                   latitude: d.latitudeFrom,
+                   longitude: d.longitudeFrom,
+                 }, {
+                   latitude: d.latitudeTo,
+                   longitude: d.longitudeTo,
+                 }],
+                 width: 5,
+                 color: '#4FC469',
+               }]}
+            markers={[{
+                 latitude: d.latitudeFrom,
+                 longitude: d.longitudeFrom,
+                 label: {
+                   content: '起点'
+                 }
+               }, {
+                 latitude: d.latitudeTo,
+                 longitude: d.longitudeTo,
+                 label: {
+                   content: '终点'
+                 }
+               }]}
+          />
+        </View>
         <View className='detail'>
           <View className='line'>
             <AtIcon value='tag' size='20' color='#CAC9CE' />
