@@ -1,11 +1,12 @@
 import {setPhone} from "@/actions/user";
 import {ORDER_LIST, PHONE_INFO} from "@/api";
 import SwiperScroll from "@/components/SwiperScroll";
-import {useQuery} from "@/react-query/react";
+import {useInfiniteQuery} from "@/react-query/react";
 import {APP_ID} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {dateFormat} from "@/utils/utils";
 import {Button, Map, Text, View} from '@tarojs/components'
+import {useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React from 'react'
 import {useDispatch, useSelector} from "react-redux";
@@ -31,12 +32,21 @@ const setting = {
 }
 
 export default function () {
+
+  console.log('order')
+
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
-  const {data = {}} = useQuery(ORDER_LIST, () => request(ORDER_LIST))
+  const fetchProjects = (key, page = 1) => request(ORDER_LIST, {page: page})
+  const {data = [], fetchMore, canFetchMore} = useInfiniteQuery(ORDER_LIST, fetchProjects, {
+    getFetchMore: lastGroup => lastGroup.nextPage
+  })
 
-  console.log('order')
+  useReachBottom(() => {
+    canFetchMore && fetchMore()
+  })
+
 
   //解密手机号
   async function getPhoneNumber(e) {
@@ -94,12 +104,12 @@ export default function () {
       return <View />;
     }
     return <View className='item_container'>
-      <SwiperScroll labels={['抢单', '派单']} >
+      <SwiperScroll labels={['抢单', '派单']}>
         <View>
-          {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
+          {data.map(r => r.list.map(d => <View className='item' onClick={() => toDetail(d)}>
             <View className='header'>
               <Text className='name'>{d.title}</Text>
-              <Text className='province'>{d.userName}</Text>
+              <Text className='province'>{`￥${d.amount}`}</Text>
             </View>
             <View className='c-map'>
               <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
@@ -141,61 +151,16 @@ export default function () {
               </View>
               <View className='line'>
                 <AtIcon value='list' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{d.addressFrom}</Text>
+                <View className='content_list'>
+                  <Text className='line_text'>{`起点：${d.addressFrom}`}</Text>
+                  <Text className='line_text'>{`终点：${d.addressTo}`}</Text>
+                </View>
               </View>
             </View>
-          </View>) : <View />}
+          </View>))}
         </View>
         <View>
-          {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
-            <View className='header'>
-              <Text className='name'>{d.title}</Text>
-              <Text className='province'>{d.userName}</Text>
-            </View>
-            <View className='c-map'>
-              <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
-                latitude={d.latitudeFrom} longitude={d.longitudeFrom}
-                polyline={[{
-                     points: [{
-                       latitude: d.latitudeFrom,
-                       longitude: d.longitudeFrom,
-                     }, {
-                       latitude: d.latitudeTo,
-                       longitude: d.longitudeTo,
-                     }],
-                     width: 5,
-                     color: '#4FC469',
-                   }]}
-                markers={[{
-                     latitude: d.latitudeFrom,
-                     longitude: d.longitudeFrom,
-                     label: {
-                       content: '起点'
-                     }
-                   }, {
-                     latitude: d.latitudeTo,
-                     longitude: d.longitudeTo,
-                     label: {
-                       content: '终点'
-                     }
-                   }]}
-              />
-            </View>
-            <View className='detail'>
-              <View className='line'>
-                <AtIcon value='tag' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text>
-              </View>
-              <View className='line'>
-                <AtIcon value='phone' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{d.phone}</Text>
-              </View>
-              <View className='line'>
-                <AtIcon value='list' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{d.addressFrom}</Text>
-              </View>
-            </View>
-          </View>) : <View />}
+
         </View>
       </SwiperScroll>
     </View>

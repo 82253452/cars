@@ -40,14 +40,14 @@
 
         .province {
           font-size: 30px;
-          color: #8A8B8F;
+          color: #4FC469;
           margin-top: 20px;
         }
       }
 
       .c-map {
         width: 100%;
-        height: 140px;
+        height: 180px;
         margin-top: 20px;
         border-radius: 20px;
         overflow: hidden;
@@ -63,12 +63,25 @@
       .detail {
         .line {
           margin-top: 20px;
+          display: flex;
+
+          .content_list {
+            display: flex;
+            flex-direction: column;
+            margin-left: 20px;
+
+            .line_text:not(:first-child) {
+              margin-top: 10px;
+            }
+          }
 
           .line_text {
             margin-left: 20px;
             font-weight: bold;
             font-size: 26px;
           }
+
+
         }
       }
     }

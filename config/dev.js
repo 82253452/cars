@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     NODE_ENV: '"development"',
-    BASE_API:'"https://mass.zhihuizhan.net/api"'
+    BASE_API:'"http://localhost:8080"'
+    // BASE_API:'"https://mass.zhihuizhan.net/api"'
   },
   defineConstants: {
   },

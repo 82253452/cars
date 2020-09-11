@@ -1,5 +1,5 @@
 import NavBar from "@/components/NavBar";
-import {Image, Text, View} from "@tarojs/components";
+import {Button, Image, Text, View} from "@tarojs/components";
 import Taro from '@tarojs/taro'
 import React from "react";
 import {useSelector} from "react-redux";
@@ -8,12 +8,16 @@ import avatar from '../../img/logo.png'
 import './center.less'
 
 export default function () {
-  const user = useSelector(state => state.user)
-
   console.log('center')
+
+  const user = useSelector(state => state.user)
 
   function userAuth() {
     Taro.navigateTo({url: '/pages/authorize/index'})
+  }
+
+  function makeCall() {
+    Taro.makePhoneCall({phoneNumber: '15901320019'})
   }
 
   return <View className='container'>
@@ -45,11 +49,11 @@ export default function () {
     <View className='content-c' style={{marginTop: '10px'}}>
       <View className='item'>
         <AtIcon value='help' size='18' color='#4FC469' />
-        <View className='content'>
-          <Text>问题反馈</Text>
-        </View>
+        <Button openType='feedback' className='content'>
+          问题反馈
+        </Button>
       </View>
-      <View className='item'>
+      <View className='item' onClick={makeCall}>
         <AtIcon value='phone' size='18' color='#4FC469' />
         <View className='content'>
           <Text>致电客服</Text>
