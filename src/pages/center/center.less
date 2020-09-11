@@ -1,20 +1,75 @@
+page {
+  background-color: #f5f5f5;
+}
+
 .container {
-  padding: 20px;
-
-  .info {
+  background-color: #f5f5f5;
+  .user-info {
+    padding: 20px 40px;
+    box-sizing: border-box;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    .avatar {
-      width: 120px;
-      height: 120px;
-      margin-left:20px;
+    justify-content: space-between;
+    background-color: #fff;
+
+    .info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .avatar {
+        width: 120px;
+        height: 120px;
+      }
+
+      .nick_name {
+        margin-left: 50px;
+        font-size: 34px;
+        font-weight: bold;
+      }
     }
 
-    .nick_name {
-      margin-left:50px;
-      font-size: 34px;
+    .circle {
+      width: 150px;
+      height: 150px;
+      background: #fff;
+      border-radius: 50%;
+      border: 15px solid #4FC469;
+      text-align: center;
+      color: #999;
       font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .title {
+        font-size: 16px;
+      }
+
+      .number {
+        font-size: 40px;
+      }
     }
+  }
+
+  .content-c {
+    background-color: #fff;
+    padding: 20px 40px;
+    box-sizing: border-box;
+
+    .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .content {
+      margin-left: 20px;
+      width: 100%;
+      padding: 20px 0;
+      color: #999;
+      font-size: 30px;
+    }
+
   }
 }
