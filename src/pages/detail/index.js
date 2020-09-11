@@ -26,8 +26,6 @@ export default function () {
     }
   } = useQuery([ORDER_DETAIL, params.id], () => request(ORDER_DETAIL, {id: params.id}))
 
-  console.log(data)
-
   return (
     <View className='index'>
       <NavBar back home title='详情' />

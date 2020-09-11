@@ -6,6 +6,7 @@ export default {
     'pages/order/index',
     'pages/detail/index',
     'pages/shipping/index',
+    'pages/serviceLocation/index',
   ],
   permission: {
     "scope.userLocation": {

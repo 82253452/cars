@@ -20,6 +20,10 @@ export default function () {
     Taro.makePhoneCall({phoneNumber: '15901320019'})
   }
 
+  function toServiceLocation() {
+    Taro.navigateTo({url: '/pages/serviceLocation/index'})
+  }
+
   return <View className='container'>
     <NavBar title='个人中心' />
     <View className='user-info'>
@@ -59,7 +63,7 @@ export default function () {
           <Text>致电客服</Text>
         </View>
       </View>
-      <View className='item'>
+      <View className='item' onClick={toServiceLocation}>
         <AtIcon value='map-pin' size='18' color='#4FC469' />
         <View className='content'>
           <Text>服务网点</Text>
