@@ -11,11 +11,11 @@ export default function ({
                            className = '',
                            itemClassNam = '',
                            labels = [],
-                           renderItem
+                           children
                          }) {
 
-  const {windowHeight} = useMemo(Taro.getSystemInfoSync,[]);
-  const {bottom,right,top} = useMemo(Taro.getMenuButtonBoundingClientRect,[]);
+  const {windowHeight} = useMemo(Taro.getSystemInfoSync, []);
+  const {bottom, right, top} = useMemo(Taro.getMenuButtonBoundingClientRect, []);
 
   const viewHeight = windowHeight - bottom - BOTTOM_GAP
   const [current, setCurrent] = useState(0)
@@ -24,12 +24,12 @@ export default function ({
   useEffectOnce(() => {
     setTimeout(() => {
       refreshDom()
-    },300)
+    }, 300)
   })
 
   useUpdateEffect(() => {
     refreshDom()
-  }, [current, renderItem])
+  }, [current])
 
   function refreshDom() {
     const query = Taro.createSelectorQuery()
@@ -49,10 +49,10 @@ export default function ({
   const SwiterItem = useCallback(() => {
     return labels.map((l, i) => <SwiperItem className={`swiper_item ${itemClassNam}`}>
       <View className={`item_content_${i}`}>
-        {renderItem(l, i)}
+        {children[i]}
       </View>
     </SwiperItem>)
-  }, [itemClassNam, labels, renderItem])
+  }, [children, itemClassNam, labels])
 
   function selectChange({detail}) {
     setCurrent(detail.current)
@@ -66,7 +66,6 @@ export default function ({
     <Swiper
       className={`item_swiper ${className}`}
       onChange={selectChange}
-      current={current}
       style={{height: `${swiperHeight}px`}}
     >
       <SwiterItem />

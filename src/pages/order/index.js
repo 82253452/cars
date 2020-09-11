@@ -5,9 +5,9 @@ import {useQuery} from "@/react-query/react";
 import {APP_ID} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {dateFormat} from "@/utils/utils";
-import {Button, CoverImage, CoverView, Map, Text, View} from '@tarojs/components'
+import {Button, Map, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
-import React, {useCallback} from 'react'
+import React from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {AtIcon} from "taro-ui";
 
@@ -88,66 +88,116 @@ export default function () {
     Taro.navigateTo({url: '/pages/detail/index?id=' + d.id})
   }
 
-  const OrderItem = useCallback(() => {
-    return <View>
-      {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
-        <View className='header'>
-          <Text className='name'>{d.title}</Text>
-          <Text className='province'>{d.userName}</Text>
-        </View>
-        <View className='c-map'>
-          <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
-            latitude={d.latitudeFrom} longitude={d.longitudeFrom}
-            polyline={[{
-                 points: [{
-                   latitude: d.latitudeFrom,
-                   longitude: d.longitudeFrom,
-                 }, {
-                   latitude: d.latitudeTo,
-                   longitude: d.longitudeTo,
-                 }],
-                 width: 5,
-                 color: '#4FC469',
-               }]}
-            markers={[{
-                 latitude: d.latitudeFrom,
-                 longitude: d.longitudeFrom,
-                 label: {
-                   content: '起点'
-                 }
-               }, {
-                 latitude: d.latitudeTo,
-                 longitude: d.longitudeTo,
-                 label: {
-                   content: '终点'
-                 }
-               }]}
-          />
-        </View>
-        <View className='detail'>
-          <View className='line'>
-            <AtIcon value='tag' size='20' color='#CAC9CE' />
-            <Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text>
-          </View>
-          <View className='line'>
-            <AtIcon value='phone' size='20' color='#CAC9CE' />
-            <Text className='line_text'>{d.phone}</Text>
-          </View>
-          <View className='line'>
-            <AtIcon value='list' size='20' color='#CAC9CE' />
-            <Text className='line_text'>{d.addressFrom}</Text>
-          </View>
-        </View>
-      </View>) : <View />}
-    </View>
-  }, [data])
 
   const OrderList = () => {
     if (!user.phone) {
       return <View />;
     }
     return <View className='item_container'>
-      <SwiperScroll renderItem={OrderItem} labels={['抢单', '派单']} />
+      <SwiperScroll labels={['抢单', '派单']} >
+        <View>
+          {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
+            <View className='header'>
+              <Text className='name'>{d.title}</Text>
+              <Text className='province'>{d.userName}</Text>
+            </View>
+            <View className='c-map'>
+              <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
+                latitude={d.latitudeFrom} longitude={d.longitudeFrom}
+                polyline={[{
+                     points: [{
+                       latitude: d.latitudeFrom,
+                       longitude: d.longitudeFrom,
+                     }, {
+                       latitude: d.latitudeTo,
+                       longitude: d.longitudeTo,
+                     }],
+                     width: 5,
+                     color: '#4FC469',
+                   }]}
+                markers={[{
+                     latitude: d.latitudeFrom,
+                     longitude: d.longitudeFrom,
+                     label: {
+                       content: '起点'
+                     }
+                   }, {
+                     latitude: d.latitudeTo,
+                     longitude: d.longitudeTo,
+                     label: {
+                       content: '终点'
+                     }
+                   }]}
+              />
+            </View>
+            <View className='detail'>
+              <View className='line'>
+                <AtIcon value='tag' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text>
+              </View>
+              <View className='line'>
+                <AtIcon value='phone' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{d.phone}</Text>
+              </View>
+              <View className='line'>
+                <AtIcon value='list' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{d.addressFrom}</Text>
+              </View>
+            </View>
+          </View>) : <View />}
+        </View>
+        <View>
+          {data.list ? data.list.map((d) => <View className='item' onClick={() => toDetail(d)}>
+            <View className='header'>
+              <Text className='name'>{d.title}</Text>
+              <Text className='province'>{d.userName}</Text>
+            </View>
+            <View className='c-map'>
+              <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
+                latitude={d.latitudeFrom} longitude={d.longitudeFrom}
+                polyline={[{
+                     points: [{
+                       latitude: d.latitudeFrom,
+                       longitude: d.longitudeFrom,
+                     }, {
+                       latitude: d.latitudeTo,
+                       longitude: d.longitudeTo,
+                     }],
+                     width: 5,
+                     color: '#4FC469',
+                   }]}
+                markers={[{
+                     latitude: d.latitudeFrom,
+                     longitude: d.longitudeFrom,
+                     label: {
+                       content: '起点'
+                     }
+                   }, {
+                     latitude: d.latitudeTo,
+                     longitude: d.longitudeTo,
+                     label: {
+                       content: '终点'
+                     }
+                   }]}
+              />
+            </View>
+            <View className='detail'>
+              <View className='line'>
+                <AtIcon value='tag' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text>
+              </View>
+              <View className='line'>
+                <AtIcon value='phone' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{d.phone}</Text>
+              </View>
+              <View className='line'>
+                <AtIcon value='list' size='20' color='#CAC9CE' />
+                <Text className='line_text'>{d.addressFrom}</Text>
+              </View>
+            </View>
+          </View>) : <View />}
+        </View>
+      </SwiperScroll>
     </View>
   }
 
