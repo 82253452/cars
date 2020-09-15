@@ -1,13 +1,15 @@
-import {ORDER_DETAIL} from "@/api";
+import {ORDER_DETAIL, ORDER_RECEIVE_ORDER} from "@/api";
 import NavBar from "@/components/NavBar";
-import {useQuery} from "@/react-query/react";
+import Panel from "@/components/Panel";
+import PanelItem from "@/components/PanelItem";
+import {useMutation, useQuery} from "@/react-query/react";
+import {queryCache} from "@/react-query";
 import {BOTTOM_GAP} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useMemo} from 'react'
-import {AtIcon} from "taro-ui";
 
 import './index.less'
 
@@ -16,6 +18,8 @@ export default function () {
   console.log('detail')
   const {params} = useRouter()
   const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect, []);
+
+  const orderStatus = {0: '抢单', 1: '完成', 2: '确认完成', 3: '已完结', 4: '已取消'}
 
   const {
     data = {
@@ -26,9 +30,29 @@ export default function () {
     }
   } = useQuery([ORDER_DETAIL, params.id], () => request(ORDER_DETAIL, {id: params.id}))
 
-  return (
+  const [mutatePostTodo] = useMutation(
+    id => request(ORDER_RECEIVE_ORDER, {id}).then(() => {
+      Taro.switchTab({url: '/pages/order/index'})
+    }),
+    {
+      onSettled: () => {
+        queryCache.invalidateQueries('ORDER_LIST_DATA_0')
+        queryCache.invalidateQueries('ORDER_LIST_DATA_1')
+        queryCache.invalidateQueries('ORDER_LIST_DATA_2')
+        queryCache.invalidateQueries('ORDER_LIST_DATA_3')
+      },
+    }
+  )
+
+  function confirm() {
+    if (data.status >= 3) {
+      return
+    }
+    mutatePostTodo(params.id)
+  }
+
+  return <NavBar back home title='详情'>
     <View className='index'>
-      <NavBar back home title='详情' />
       <View style={{height: `calc(100vh - 450rpx - ${bottom + BOTTOM_GAP}px)`}}>
         <Map scale={8} className='map' latitude={data.latitudeFrom} longitude={data.longitudeFrom}
           polyline={[{
@@ -58,23 +82,24 @@ export default function () {
         />
       </View>
       <View className='info'>
-        <View className='info-header'>
-          <AtIcon value='map-pin' size='20' color='#4FC469' />
-          <View className='content'>
+        <Panel padding={20}>
+          <PanelItem icon='map-pin' paddingUD={5}>
             <Text className='title'>{data.title}</Text>
             <Text className='desc'>{`姓名：${data.userName}`}</Text>
             <Text className='desc'>{`手机：${data.phone}`}</Text>
             <Text className='desc'>{`起点：${data.addressFrom}`}</Text>
             <Text className='desc'>{`终点：${data.addressTo}`}</Text>
-            <Text className='desc'>{`价格：${data.amount}`}</Text>
-          </View>
-        </View>
-        <View className='info-button'>
-          <Text>抢单</Text>
+            <Text className='desc'>{`价格：￥${data.amount}`}</Text>
+          </PanelItem>
+        </Panel>
+        <View className='info-button' style={{backgroundColor: `${data.status >= 3 ? '#999' : '#4FC469'}`}}
+          onClick={confirm}
+        >
+          <Text>{`${orderStatus[data.status]}`}</Text>
         </View>
       </View>
     </View>
-  )
+  </NavBar>
 }
 
 

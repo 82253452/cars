@@ -1,4 +1,4 @@
-import {LOGIN, USER_INFO} from "@/api";
+import {LOGIN, PHONE_INFO, USER_INFO} from "@/api";
 import Taro from '@tarojs/taro'
 import {APP_ID} from "./Const";
 
@@ -128,32 +128,10 @@ export function throttle(func, wait, options) {
 }
 
 /**
- * 授权登录
- * @return {[type]} [description]
- */
-export async function authorize(e) {
-  const code = await wxLogin()
-  const data = await request(LOGIN, {
-    code: code,
-    encryptedData: e.detail.encryptedData,
-    iv: e.detail.iv,
-    signature: e.detail.signature,
-    rawData: e.detail.rawData,
-    appId: APP_ID
-  }, false)
-  if (!data.data || !data.data.token) {
-    throw new Error('登录失败！请联系管理员')
-    return
-  }
-  Taro.setStorageSync('X-Token', data.data.token)
-  return data.data
-}
-
-/**
  * 获取微信code 返回Promise可以转同步
  * @return {[type]} [description]
  */
-async function wxLogin() {
+export async function wxLogin() {
   return new Promise((resolve, reject) => {
     Taro.login({
       success: function (res) {
@@ -180,16 +158,16 @@ async function wxLogin() {
 export async function getUserInfo() {
   try {
     const code = await wxLogin()
-    const data = await request(USER_INFO, {code}, false);
-    if (!data.data || !data.data.token) {
+    const data = await request(USER_INFO, {code, appId: APP_ID}, false);
+    if (!data || !data.token) {
       throw new Error('该用户未注册')
       return
     }
-    // set('user',data.data)
-    Taro.setStorageSync('X-Token', data.data.token)
+    Taro.setStorageSync('X-Token', data.token)
     return data
   } catch (e) {
     console.error(e)
     throw new Error('重新登录失败')
   }
 }
+

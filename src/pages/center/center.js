@@ -1,9 +1,10 @@
 import NavBar from "@/components/NavBar";
+import Panel from '@/components/Panel'
+import PanelItem from '@/components/PanelItem'
 import {Button, Image, Text, View} from "@tarojs/components";
 import Taro from '@tarojs/taro'
 import React from "react";
 import {useSelector} from "react-redux";
-import {AtIcon} from "taro-ui";
 import avatar from '../../img/logo.png'
 import './center.less'
 
@@ -24,60 +25,53 @@ export default function () {
     Taro.navigateTo({url: '/pages/serviceLocation/index'})
   }
 
-  return <View className='container'>
-    <NavBar title='个人中心' />
-    <View className='user-info'>
-      <View className='info' onClick={userAuth}>
-        <Image className='avatar' src={user.avatarurl || avatar} />
-        <Text className='nick_name'>{user.nickname || '登录'}</Text>
+  return <NavBar title='个人中心' viewBackGround='#f5f5f5'>
+    <View className='container'>
+      <View className='user-info'>
+        <View className='info' onClick={userAuth}>
+          <Image className='avatar' src={user.avatarurl || avatar} />
+          <Text className='nick_name'>{user.nickname || '登录'}</Text>
+        </View>
+        <View className='circle'>
+          <Text className='title'>信誉</Text>
+          <Text className='number'>100</Text>
+        </View>
       </View>
-      <View className='circle'>
-        <Text className='title'>信誉</Text>
-        <Text className='number'>100</Text>
-      </View>
-    </View>
-    <View className='content-c'>
-      <View className='item'>
-        <AtIcon value='home' size='18' color='#4FC469' />
-        <View className='content'>
+
+      <Panel>
+        <PanelItem icon='credit-card'>
+          <Text>{`￥${user.amount || 0}`}</Text>
+        </PanelItem>
+        <PanelItem icon='home'>
           <Text>{`地址 ${user.country || ''} ${user.province || ''} ${user.city || ''}`}</Text>
-        </View>
-      </View>
-      <View className='item'>
-        <AtIcon value='phone' size='18' color='#4FC469' />
-        <View className='content'>
+        </PanelItem>
+        <PanelItem icon='phone'>
           <Text>15901320019</Text>
-        </View>
-      </View>
-    </View>
-    <View className='content-c' style={{marginTop: '10px'}}>
-      <View className='item'>
-        <AtIcon value='help' size='18' color='#4FC469' />
-        <Button openType='feedback' className='content'>
-          问题反馈
-        </Button>
-      </View>
-      <View className='item' onClick={makeCall}>
-        <AtIcon value='phone' size='18' color='#4FC469' />
-        <View className='content'>
+        </PanelItem>
+      </Panel>
+
+      <Panel space={10}>
+        <PanelItem icon='help'>
+          <Button openType='feedback' className='content'>
+            问题反馈
+          </Button>
+        </PanelItem>
+        <PanelItem icon='phone' onClick={makeCall}>
           <Text>致电客服</Text>
-        </View>
-      </View>
-      <View className='item' onClick={toServiceLocation}>
-        <AtIcon value='map-pin' size='18' color='#4FC469' />
-        <View className='content'>
+        </PanelItem>
+        <PanelItem icon='map-pin' onClick={toServiceLocation}>
           <Text>服务网点</Text>
-        </View>
-      </View>
-    </View>
-    <View className='content-c' style={{marginTop: '10px'}}>
-      <View className='item'>
-        <AtIcon value='settings' size='18' color='#4FC469' />
-        <View className='content'>
+        </PanelItem>
+      </Panel>
+
+      <Panel space={10}>
+        <PanelItem icon='settings'>
           <Text>设置</Text>
-        </View>
-      </View>
+        </PanelItem>
+      </Panel>
+
     </View>
-  </View>
+  </NavBar>
+
 }
 

@@ -33,37 +33,39 @@ export default function () {
     </View>)
   }
   return (
-    <View className='index'>
-      <NavBar title='物流' />
-      <Swiper
-        className='swiper'
-        circular
-        autoplay
-      >
-        <SwiperItem>
-          <Image className='img'
-            src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
-          />
-        </SwiperItem>
-        <SwiperItem>
-          <Image className='img'
-            src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/3712a246a8c94925878570a2eae9e6af.jpeg'
-          />
-        </SwiperItem>
-        <SwiperItem>
-          <Image className='img'
-            src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
-          />
-        </SwiperItem>
-      </Swiper>
-      <View className='container'>
-        <View className='header'>
-          <Text>{data.list.length} 种车型</Text>
+    <NavBar title='物流' >
+      <View className='index'>
+        <Swiper
+          className='swiper'
+          circular
+          autoplay
+        >
+          <SwiperItem>
+            <Image className='img'
+              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
+            />
+          </SwiperItem>
+          <SwiperItem>
+            <Image className='img'
+              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/3712a246a8c94925878570a2eae9e6af.jpeg'
+            />
+          </SwiperItem>
+          <SwiperItem>
+            <Image className='img'
+              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
+            />
+          </SwiperItem>
+        </Swiper>
+        <View className='container'>
+          <View className='header'>
+            <Text>{data.list.length} 种车型</Text>
+          </View>
+          <CarItem />
         </View>
-        <CarItem />
       </View>
+    </NavBar>
 
-    </View>
+
   )
 }
 

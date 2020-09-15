@@ -1,4 +1,4 @@
-import {SET_BOUNDING_CLIENT_RECT} from "@/constants/theme";
+import {SET_BOUNDING_CLIENT_RECT, SET_VIEW_HEIGHT, SET_WINDOW_HEIGHT} from "@/constants/theme";
 
 export const setBoundingClientRect = (state) => {
   return {
@@ -7,3 +7,15 @@ export const setBoundingClientRect = (state) => {
   }
 }
 
+export const setWindowHeight = (state) => {
+  return {
+    type: SET_WINDOW_HEIGHT,
+    state
+  }
+}
+export const setViewHeight = (state) => {
+  return {
+    type: SET_VIEW_HEIGHT,
+    state
+  }
+}

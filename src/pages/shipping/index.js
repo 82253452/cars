@@ -1,14 +1,13 @@
-import {ORDER_DETAIL} from "@/api";
+import {ORDER_SUBMIT} from "@/api";
 import NavBar from "@/components/NavBar";
-import {useQuery} from "@/react-query/react";
-import {BOTTOM_GAP} from "@/utils/Const";
+import Panel from "@/components/Panel";
+import PanelItem from "@/components/PanelItem";
 import {request} from "@/utils/request";
 import {Input, Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useMemo, useState} from 'react'
 import useEffectOnce from "react-use/lib/useEffectOnce";
-import {AtIcon} from "taro-ui";
 
 import './index.less'
 
@@ -41,7 +40,11 @@ export default function () {
   })
 
   const {params} = useRouter()
-  const {bottom} = useMemo(Taro.getMenuButtonBoundingClientRect, []);
+
+  const [orderReq, setOrderReq] = useState({
+    carTypeId: params.id,
+  })
+
 
   useEffectOnce(() => {
     Taro.getLocation({type: 'wgs84'}).then(res => setloction({
@@ -62,6 +65,7 @@ export default function () {
           }
         }
       })
+      setOrderReq({...orderReq, latitudeFrom: res.latitude, longitudeFrom: res.longitude, addressFrom: res.address})
     })
   }
 
@@ -74,53 +78,62 @@ export default function () {
           }
         }
       })
+      setOrderReq({...orderReq, latitudeTo: res.latitude, longitudeTo: res.longitude, addressTo: res.address})
     })
   }
 
+  function submit() {
+    request(ORDER_SUBMIT, orderReq).then(() => {
+      Taro.switchTab({url:'/pages/order/index'})
+    })
+  }
+
+  const mapView = useMemo(() => <Map className='map' scale={12} latitude={location.marker.latitude}
+    longitude={location.marker.longitude}
+    polyline={[{
+                                       points: [location.marker, location.from],
+                                       width: 5,
+                                       color: '#999',
+                                       dottedLine: true
+                                     }, {points: [location.from, location.to], width: 5, color: '#4FC469'}]}
+    markers={[location.marker, location.from, location.to]}
+  />, [location])
+
+
   return (
-    <View className='index'>
-      <NavBar back home title='发货' />
-      <View style={{height: `calc(100vh - 450rpx - ${bottom + BOTTOM_GAP}px)`}}>
-        <Map className='map' scale={12} latitude={location.marker.latitude} longitude={location.marker.longitude}
-          polyline={[{
-               points: [location.marker, location.from],
-               width: 5,
-               color: '#999',
-               dottedLine: true
-             }, {points: [location.from, location.to], width: 5, color: '#4FC469'}]}
-          markers={[location.marker, location.from, location.to]}
-        />
-      </View>
-      <View className='info'>
-        <View className='info-item'>
-          <AtIcon value='user' size='18' color='#4FC469' />
-          <View className='content'>
-            <Input className='input' placeholder='姓名' />
-          </View>
-        </View>
-        <View className='info-item'>
-          <AtIcon value='phone' size='18' color='#4FC469' />
-          <View className='content'>
-            <Input className='input' type='number' placeholder='联系电话' placeholderClass='input-placeholder' />
-          </View>
-        </View>
-        <View className='info-item'>
-          <AtIcon value='map-pin' size='18' color='#4FC469' />
-          <View className='content' onClick={sendAddress}>
+    <NavBar back home title='发货'>
+      <View className='index'>
+        {mapView}
+        <Panel padding={20}>
+          <PanelItem icon='user'>
+            <Input className='input' placeholder='姓名' value={orderReq.userName}
+              onBlur={e => setOrderReq({...orderReq, userName: e.detail.value})}
+            />
+          </PanelItem>
+          <PanelItem icon='phone'>
+            <Input className='input' type='number' placeholder='联系电话' placeholderClass='input-placeholder'
+              value={orderReq.phone}
+              onBlur={(e) => setOrderReq({...orderReq, phone: e.detail.value})}
+            />
+          </PanelItem>
+          <PanelItem icon='credit-card'>
+            <Input className='input' type='number' placeholder='价格' placeholderClass='input-placeholder'
+              value={orderReq.amount}
+              onBlur={(e) => setOrderReq({...orderReq, amount: e.detail.value})}
+            />
+          </PanelItem>
+          <PanelItem icon='map-pin' onClick={sendAddress}>
             <Text className='title'>{location.from.address || '发货地址'}</Text>
-          </View>
-        </View>
-        <View className='info-item'>
-          <AtIcon value='map-pin' size='18' color='#4FC469' />
-          <View className='content' onClick={receiveAddress}>
+          </PanelItem>
+          <PanelItem icon='map-pin' onClick={receiveAddress}>
             <Text className='title'>{location.to.address || '收货地址'}</Text>
-          </View>
-        </View>
-        <View className='info-button'>
+          </PanelItem>
+        </Panel>
+        <View className='info-button' onClick={submit}>
           <Text>确定</Text>
         </View>
       </View>
-    </View>
+    </NavBar>
   )
 }
 

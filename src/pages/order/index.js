@@ -1,16 +1,15 @@
-import {setPhone} from "@/actions/user";
-import {ORDER_LIST, PHONE_INFO} from "@/api";
+import {ORDER_LIST} from "@/api";
+import Panel from "@/components/Panel";
+import PanelItem from "@/components/PanelItem";
 import SwiperScroll from "@/components/SwiperScroll";
 import {useInfiniteQuery} from "@/react-query/react";
-import {APP_ID} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {dateFormat} from "@/utils/utils";
-import {Button, Map, Text, View} from '@tarojs/components'
-import {useReachBottom} from "@tarojs/runtime";
+import {Text, View} from '@tarojs/components'
+import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React from 'react'
-import {useDispatch, useSelector} from "react-redux";
-import {AtIcon} from "taro-ui";
+import React, {useCallback, useMemo, useRef, useState} from 'react'
+import {useSelector} from "react-redux";
 
 import './index.less'
 
@@ -35,142 +34,132 @@ export default function () {
 
   console.log('order')
 
+
   const user = useSelector(state => state.user)
-  const dispatch = useDispatch()
+  const {viewHeight} = useSelector(state => state.theme)
 
-  const fetchProjects = (key, page = 1) => request(ORDER_LIST, {page: page})
-  const {data = [], fetchMore, canFetchMore} = useInfiniteQuery(ORDER_LIST, fetchProjects, {
-    getFetchMore: lastGroup => lastGroup.nextPage
-  })
+  const [swiperHeight, setSwiperHeight] = useState()
 
-  useReachBottom(() => {
-    canFetchMore && fetchMore()
-  })
+  const indexRef = useRef(0)
 
 
-  //解密手机号
-  async function getPhoneNumber(e) {
-    const {iv, encryptedData} = e.detail
-    try {
-      const {code} = await Taro.login()
-      if (!iv || !encryptedData || !code) {
-        return
-      }
-      const res = await request(PHONE_INFO, {
-        iv,
-        code,
-        encryptedData,
-        signature: 'signature',
-        rawData: 'rawData',
-        appId: APP_ID
-      })
-      if (!res.data) {
-        await Taro.showToast({title: '获取手机号失败 请再次获取', icon: 'none'})
-        return
-      }
-      dispatch(setPhone(res.data))
-    } catch (e) {
-      await Taro.showToast({title: '获取手机号失败 请再次获取', icon: 'none'})
-    }
+  function fetchProjects(key, page, status) {
+    return request(ORDER_LIST, {page: page, status})
   }
+
+  function refreshDom() {
+    const query = Taro.createSelectorQuery()
+    query.select(`.container .item_content_${indexRef.current}`).boundingClientRect().exec(res => {
+      res[0] && setSwiperHeight(res[0].height > viewHeight ? res[0].height : viewHeight)
+    })
+  }
+
 
   function userAuth() {
     Taro.navigateTo({url: '/pages/authorize/index'})
   }
 
-  const IsLogin = () => {
-    if (user.nickname) {
-      return <View />;
+  const isLogin = useMemo(() => {
+    if (user.nickname && user.phone) {
+      return <></>;
     }
     return <View className='button' onClick={userAuth}><Text>登录</Text></View>
-  }
+  }, [user.nickname, user.phone])
 
-  const IsNoPhone = () => {
-    if (user.phone || !user.nickname) {
-      return <View />;
-    }
-    return <Button openType='getPhoneNumber' className='feed-buttom' onGetPhoneNumber={getPhoneNumber}>
-      <Text>认证</Text>
-    </Button>
-  }
 
   function toDetail(d) {
     Taro.navigateTo({url: '/pages/detail/index?id=' + d.id})
   }
 
+  function indexChange(i) {
+    indexRef.current = i
+  }
 
-  const OrderList = () => {
+  function ListView({data, canFetchMore, fetchMore, index, refetch}) {
+    useReachBottom(async () => {
+      index === indexRef.current && canFetchMore && await fetchMore()
+      setTimeout(refreshDom, 200)
+    })
+    usePullDownRefresh(async () => {
+      index === indexRef.current && await refetch()
+      setTimeout(refreshDom, 200)
+      Taro.stopPullDownRefresh()
+    })
+    return <View>
+      {data.map(r => r.list.map(d => <View className='item' onClick={() => toDetail(d)}>
+        <View className='header'>
+          <Text className='name'>{d.title}</Text>
+          <Text className='province'>{`￥${d.amount}`}</Text>
+        </View>
+        <Panel padding={0} space={10}>
+          <PanelItem icon='tag' paddingUD={10}>
+            <View><View><Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text></View></View>
+          </PanelItem>
+          <PanelItem icon='phone' paddingUD={10}>
+            <View><View><Text className='line_text'>{d.phone}</Text></View></View>
+          </PanelItem>
+          <PanelItem icon='list' paddingUD={10}>
+            <View> <View><Text className='line_text'>{`起点：${d.addressFrom}`}</Text></View></View>
+            <View> <View><Text className='line_text'>{`终点：${d.addressTo}`}</Text></View></View>
+          </PanelItem>
+        </Panel>
+      </View>))}
+    </View>
+  }
+
+  const ListCurrentView = useCallback(() => {
+    console.log('ListCurrentView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_0`, (key, page = 1) => fetchProjects(key, page, 0), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0} />
+
+  }, [])
+
+  const ReceiveView = useCallback(() => {
+    console.log('ReceiveView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_1`, (key, page = 1) => fetchProjects(key, page, 1), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1} />
+
+  }, [])
+  const FinashView = useCallback(() => {
+    console.log('FinashView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_2`, (key, page = 1) => fetchProjects(key, page, 2), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2} />
+
+  }, [])
+  const FinalView = useCallback(() => {
+    console.log('FinalView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_3`, (key, page = 1) => fetchProjects(key, page, 3), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
+  }, [])
+
+
+  const OrderList = useMemo(() => {
+    console.log('orderList')
     if (!user.phone) {
       return <View />;
     }
     return <View className='item_container'>
-      <SwiperScroll labels={['抢单', '派单']}>
-        <View>
-          {data.map(r => r.list.map(d => <View className='item' onClick={() => toDetail(d)}>
-            <View className='header'>
-              <Text className='name'>{d.title}</Text>
-              <Text className='province'>{`￥${d.amount}`}</Text>
-            </View>
-            <View className='c-map'>
-              <Map className='map' scale={6} setting={setting} enableZoom={false} enableScroll={false}
-                latitude={d.latitudeFrom} longitude={d.longitudeFrom}
-                polyline={[{
-                     points: [{
-                       latitude: d.latitudeFrom,
-                       longitude: d.longitudeFrom,
-                     }, {
-                       latitude: d.latitudeTo,
-                       longitude: d.longitudeTo,
-                     }],
-                     width: 5,
-                     color: '#4FC469',
-                   }]}
-                markers={[{
-                     latitude: d.latitudeFrom,
-                     longitude: d.longitudeFrom,
-                     label: {
-                       content: '起点'
-                     }
-                   }, {
-                     latitude: d.latitudeTo,
-                     longitude: d.longitudeTo,
-                     label: {
-                       content: '终点'
-                     }
-                   }]}
-              />
-            </View>
-            <View className='detail'>
-              <View className='line'>
-                <AtIcon value='tag' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text>
-              </View>
-              <View className='line'>
-                <AtIcon value='phone' size='20' color='#CAC9CE' />
-                <Text className='line_text'>{d.phone}</Text>
-              </View>
-              <View className='line'>
-                <AtIcon value='list' size='20' color='#CAC9CE' />
-                <View className='content_list'>
-                  <Text className='line_text'>{`起点：${d.addressFrom}`}</Text>
-                  <Text className='line_text'>{`终点：${d.addressTo}`}</Text>
-                </View>
-              </View>
-            </View>
-          </View>))}
-        </View>
-        <View>
-
-        </View>
+      <SwiperScroll labels={['抢单', '派单', '结单', '已完结']} onChange={indexChange} swiperH={swiperHeight}>
+        <ListCurrentView />
+        <ReceiveView />
+        <FinashView />
+        <FinalView />
       </SwiperScroll>
     </View>
-  }
+  }, [swiperHeight, user.phone])
 
   return (
     <View className='index'>
-      <IsLogin />
-      <IsNoPhone />
-      <OrderList />
+      {isLogin}
+      {OrderList}
     </View>
   )
 }

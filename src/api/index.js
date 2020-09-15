@@ -13,3 +13,6 @@ export const CAR_LIST = "/car/list"
 
 export const ORDER_LIST = "/order/list"
 export const ORDER_DETAIL = "/order/detail"
+export const ORDER_SUBMIT = "/order/submit POST"
+export const ORDER_RECEIVE_ORDER = "/order/receiveOrder"
+
