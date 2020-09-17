@@ -25,6 +25,13 @@ export default function () {
     Taro.navigateTo({url: '/pages/serviceLocation/index'})
   }
 
+  function toCompany() {
+    Taro.navigateTo({url: '/pages/companyCertification/index'})
+  }
+  function toTrans() {
+    Taro.navigateTo({url: '/pages/transCompany/index'})
+  }
+
   return <NavBar title='个人中心' viewBackGround='#f5f5f5'>
     <View className='container'>
       <View className='user-info'>
@@ -65,8 +72,11 @@ export default function () {
       </Panel>
 
       <Panel space={10}>
-        <PanelItem icon='settings'>
-          <Text>设置</Text>
+        <PanelItem icon='filter' onClick={toTrans}>
+          <Text>物流公司</Text>
+        </PanelItem>
+        <PanelItem icon='eye' onClick={toCompany}>
+          <Text>企业认证</Text>
         </PanelItem>
       </Panel>
 

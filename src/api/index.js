@@ -5,6 +5,7 @@
 * default
 * /test/api GET FALSE
 * */
+export const COMMON_TOKEN = "/common/ypQiniuToken"
 export const LOGIN = "/mini/login POST"
 export const PHONE_INFO = "/mini/getPhoneNoInfo POST"
 export const USER_INFO = "/mini/user"

@@ -1,9 +1,9 @@
-import {View} from "@tarojs/components";
+import {Text, View} from "@tarojs/components";
 import React from "react";
 import {AtIcon} from "taro-ui";
 import './index.less'
 
-export default function ({icon, iconColor = '#4FC469', paddingUD = 20, iconSize = 18, children, style, onClick}) {
+export default function ({icon, title, iconColor = '#4FC469', paddingUD = 20, iconSize = 18, children, style, onClick}) {
 
 
   return <View className='panel-item-container'
@@ -14,9 +14,11 @@ export default function ({icon, iconColor = '#4FC469', paddingUD = 20, iconSize 
                  padding: `${paddingUD}rpx`
                }}
   >
-    <AtIcon customStyle={{marginTop: `${children.length > 1 ? '10rpx' : '0'}`}} value={icon} size={iconSize}
-      color={iconColor}
-    />
+      {title?<View className='title' style={{marginTop: `${children.length > 1 ? '10rpx' : '0'}`,color:iconColor}}>
+          <Text>{title}</Text>
+      </View>:<AtIcon customStyle={{marginTop: `${children.length > 1 ? '10rpx' : '0'}`}} value={icon} size={iconSize}
+        color={iconColor}
+      />}
     <View className='content'>
       {children}
     </View>

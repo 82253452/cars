@@ -7,6 +7,8 @@ export default {
     'pages/detail/index',
     'pages/shipping/index',
     'pages/serviceLocation/index',
+    'pages/companyCertification/index',
+    'pages/transCompany/index',
   ],
   permission: {
     "scope.userLocation": {
