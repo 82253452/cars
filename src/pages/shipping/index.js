@@ -83,8 +83,44 @@ export default function () {
   }
 
   function submit() {
+    if (!orderReq.userName) {
+      Taro.showToast({
+        title: '请填写姓名',
+        icon: 'none'
+      })
+      return
+    }
+    if (!orderReq.phone) {
+      Taro.showToast({
+        title: '请填写联系电话',
+        icon: 'none'
+      })
+      return
+    }
+    if (!orderReq.amount) {
+      Taro.showToast({
+        title: '请填写价格',
+        icon: 'none'
+      })
+      return
+    }
+    if (!orderReq.addressFrom) {
+      Taro.showToast({
+        title: '请选择发货地址',
+        icon: 'none'
+      })
+      return
+    }
+    if (!orderReq.addressTo) {
+      Taro.showToast({
+        title: '请选择收获地址',
+        icon: 'none'
+      })
+      return
+    }
+
     request(ORDER_SUBMIT, orderReq).then(() => {
-      Taro.switchTab({url:'/pages/order/index'})
+      Taro.switchTab({url: '/pages/order/index'})
     })
   }
 
@@ -127,6 +163,11 @@ export default function () {
           </PanelItem>
           <PanelItem icon='map-pin' onClick={receiveAddress}>
             <Text className='title'>{location.to.address || '收货地址'}</Text>
+          </PanelItem>
+          <PanelItem icon='list'>
+            <Input className='input' placeholder='备注' value={orderReq.des}
+              onBlur={e => setOrderReq({...orderReq, des: e.detail.value})}
+            />
           </PanelItem>
         </Panel>
         <View className='info-button' onClick={submit}>

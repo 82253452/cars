@@ -1,4 +1,4 @@
-import {ORDER_LIST} from "@/api";
+import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
 import PanelItem from "@/components/PanelItem";
 import SwiperScroll from "@/components/SwiperScroll";
@@ -8,7 +8,7 @@ import {dateFormat} from "@/utils/utils";
 import {Text, View} from '@tarojs/components'
 import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React, {useCallback, useMemo, useRef, useState} from 'react'
+import React, {useCallback, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
 
 import './index.less'
@@ -35,17 +35,11 @@ export default function () {
   console.log('order')
 
 
-  const user = useSelector(state => state.user)
   const {viewHeight} = useSelector(state => state.theme)
 
   const [swiperHeight, setSwiperHeight] = useState()
 
   const indexRef = useRef(0)
-
-
-  function fetchProjects(key, page, status) {
-    return request(ORDER_LIST, {page: page, status})
-  }
 
   function refreshDom() {
     const query = Taro.createSelectorQuery()
@@ -97,7 +91,7 @@ export default function () {
 
   const ListCurrentView = useCallback(() => {
     console.log('ListCurrentView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_0`, (key, page = 1) => fetchProjects(key, page, 0), {
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST,{page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0} />
@@ -106,23 +100,32 @@ export default function () {
 
   const ReceiveView = useCallback(() => {
     console.log('ReceiveView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_1`, (key, page = 1) => fetchProjects(key, page, 1), {
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,1], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:1}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1} />
 
   }, [])
-  const FinashView = useCallback(() => {
+  const InTransitView = useCallback(() => {
     console.log('FinashView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_2`, (key, page = 1) => fetchProjects(key, page, 2), {
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,2], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:2}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2} />
 
   }, [])
+  const ConfirmedView = useCallback(() => {
+    console.log('FinashView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,3], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:3}), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2} />
+
+  }, [])
+
   const FinalView = useCallback(() => {
     console.log('FinalView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`ORDER_LIST_DATA_3`, (key, page = 1) => fetchProjects(key, page, 3), {
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_FINASH_LIST, (key, page = 1) => request(ORDER_FINASH_LIST,{page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
@@ -131,10 +134,11 @@ export default function () {
   return (
     <View className='index'>
       <View className='item_container'>
-        <SwiperScroll labels={['抢单', '派单', '结单', '已完结']} onChange={indexChange} swiperH={swiperHeight}>
+        <SwiperScroll labels={['抢单', '派单', '派送中', '待确认','已完结']} onChange={indexChange} swiperH={swiperHeight}>
           <ListCurrentView />
           <ReceiveView />
-          <FinashView />
+          <InTransitView />
+          <ConfirmedView />
           <FinalView />
         </SwiperScroll>
       </View>

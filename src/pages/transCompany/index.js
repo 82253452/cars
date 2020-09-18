@@ -6,14 +6,9 @@ import {Image, Text, View} from "@tarojs/components";
 import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React from "react";
-import {useSelector} from "react-redux";
 import './index.less'
 
 export default function () {
-
-  const user = useSelector(state => state.user)
-
-  console.log(user)
 
   function fetchProjects(key, page = 1) {
     return request(TRANS_COMPANY_PAGE, {page: page})

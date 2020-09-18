@@ -4,20 +4,24 @@ import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
 import PanelItem from '@/components/PanelItem'
 import {request} from "@/utils/request";
-import {Button, View} from "@tarojs/components";
+import {Button, Form, View} from "@tarojs/components";
 import React, {useState} from "react";
+import {useSelector} from "react-redux";
 import {AtForm, AtIcon, AtInput} from "taro-ui";
 import './index.less'
 
 export default function () {
-  const [data = {}, setData] = useState()
+
+  const user = useSelector(state => state.user)
+
+  const [data = {}, setData] = useState(user.company)
 
   async function handleSubmit(e) {
     await request(COMPANY_CERT, e[0].detail.value)
   }
 
-  return <NavBar title='企业认证' back home viewBackGround='#f5f5f5'>
-    <AtForm onSubmit={handleSubmit}>
+  return <NavBar title='企业认证' back home viewBackGround='#fff'>
+    <Form onSubmit={handleSubmit}>
       <View className='container'>
         <Panel padding={0}>
           <PanelItem icon='bullet-list'>
@@ -75,7 +79,7 @@ export default function () {
           </Button>
         </View>
       </View>
-    </AtForm>
+    </Form>
   </NavBar>
 
 }
