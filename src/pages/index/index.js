@@ -1,11 +1,10 @@
-import {CAR_LIST} from "@/api";
+import {BANNER_LIST, CAR_LIST} from "@/api";
 import NavBar from "@/components/NavBar";
 import {useQuery} from '@/react-query'
 import {request} from "@/utils/request";
 import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
 import React from 'react'
-import {useSelector} from "react-redux";
 import {AtIcon} from "taro-ui";
 
 import './index.less'
@@ -13,6 +12,8 @@ import './index.less'
 export default function () {
   console.log('index')
   const {data = {list: []}} = useQuery(CAR_LIST, () => request(CAR_LIST))
+
+  const {data: banner = {list: []}} = useQuery(BANNER_LIST, () => request(BANNER_LIST))
 
   function toShipping(d) {
     Taro.navigateTo({url: '/pages/shipping/index?id=' + d.id})
@@ -32,30 +33,25 @@ export default function () {
       </View>
     </View>)
   }
+
+  function Banner() {
+    return <Swiper
+      className='swiper'
+      circular
+      autoplay
+    >
+      {banner.list.map(l => <SwiperItem>
+        <Image className='img'
+          src={l.src}
+        />
+      </SwiperItem>)}
+    </Swiper>
+  }
+
   return (
-    <NavBar title='物流' >
+    <NavBar title='物流'>
       <View className='index'>
-        <Swiper
-          className='swiper'
-          circular
-          autoplay
-        >
-          <SwiperItem>
-            <Image className='img'
-              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
-            />
-          </SwiperItem>
-          <SwiperItem>
-            <Image className='img'
-              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/3712a246a8c94925878570a2eae9e6af.jpeg'
-            />
-          </SwiperItem>
-          <SwiperItem>
-            <Image className='img'
-              src='https://kan-jian.oss-cn-beijing.aliyuncs.com/wx_temp/1806317dd79a462b954682ffdc1cd62a.jpeg'
-            />
-          </SwiperItem>
-        </Swiper>
+        <Banner />
         <View className='container'>
           <View className='header'>
             <Text>{data.list.length} 种车型</Text>

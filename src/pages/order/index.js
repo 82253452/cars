@@ -55,18 +55,6 @@ export default function () {
   }
 
 
-  function userAuth() {
-    Taro.navigateTo({url: '/pages/authorize/index'})
-  }
-
-  const isLogin = useMemo(() => {
-    if (user.nickname && user.phone) {
-      return <></>;
-    }
-    return <View className='button' onClick={userAuth}><Text>登录</Text></View>
-  }, [user.nickname, user.phone])
-
-
   function toDetail(d) {
     Taro.navigateTo({url: '/pages/detail/index?id=' + d.id})
   }
@@ -140,26 +128,16 @@ export default function () {
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
   }, [])
 
-
-  const OrderList = useMemo(() => {
-    console.log('orderList')
-    if (!user.phone) {
-      return <View />;
-    }
-    return <View className='item_container'>
-      <SwiperScroll labels={['抢单', '派单', '结单', '已完结']} onChange={indexChange} swiperH={swiperHeight}>
-        <ListCurrentView />
-        <ReceiveView />
-        <FinashView />
-        <FinalView />
-      </SwiperScroll>
-    </View>
-  }, [swiperHeight, user.phone])
-
   return (
     <View className='index'>
-      {isLogin}
-      {OrderList}
+      <View className='item_container'>
+        <SwiperScroll labels={['抢单', '派单', '结单', '已完结']} onChange={indexChange} swiperH={swiperHeight}>
+          <ListCurrentView />
+          <ReceiveView />
+          <FinashView />
+          <FinalView />
+        </SwiperScroll>
+      </View>
     </View>
   )
 }

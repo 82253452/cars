@@ -17,3 +17,11 @@ export const ORDER_DETAIL = "/order/detail"
 export const ORDER_SUBMIT = "/order/submit POST"
 export const ORDER_RECEIVE_ORDER = "/order/receiveOrder"
 
+export const TRANS_COMPANY_PAGE = "/trans/user/list"
+export const TRANS_COMPANY_ATTACH = "/trans/attachCompany"
+
+export const COMPANY_CERT = "/company/certCompany POST"
+
+export const BANNER_LIST = "/banner/list"
+
+

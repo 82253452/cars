@@ -1,8 +1,10 @@
+import {COMPANY_CERT} from "@/api";
 import ImageSelecter from '@/components/ImageSelecter'
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
 import PanelItem from '@/components/PanelItem'
-import {Button, Icon, Input, Text, View} from "@tarojs/components";
+import {request} from "@/utils/request";
+import {Button, View} from "@tarojs/components";
 import React, {useState} from "react";
 import {AtForm, AtIcon, AtInput} from "taro-ui";
 import './index.less'
@@ -10,8 +12,8 @@ import './index.less'
 export default function () {
   const [data = {}, setData] = useState()
 
-  function handleSubmit(e) {
-    console.log(e[0].detail.value)
+  async function handleSubmit(e) {
+    await request(COMPANY_CERT, e[0].detail.value)
   }
 
   return <NavBar title='企业认证' back home viewBackGround='#f5f5f5'>
@@ -32,7 +34,7 @@ export default function () {
         <Panel space={10} padding={0}>
           <PanelItem title='营业执照'>
             <View className='image-list'>
-              <ImageSelecter value={data.img} width={100} height={100} onChange={(e)=>data.img = e}>
+              <ImageSelecter value={data.img} width={100} height={100} onChange={(e) => data.img = e}>
                 <View className='up-img'>
                   <AtIcon value='upload' color='#f5f5f5' />
                 </View>
