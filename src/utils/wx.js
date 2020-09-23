@@ -3,7 +3,6 @@ import {LOGIN, PHONE_INFO} from "@/api";
 import {APP_ID} from "@/utils/Const";
 import {request} from "@/utils/request";
 import Taro from "@tarojs/taro";
-import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 
 
