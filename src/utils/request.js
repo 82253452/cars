@@ -2,14 +2,14 @@ import {LOGIN, PHONE_INFO, USER_INFO} from "@/api";
 import Taro from '@tarojs/taro'
 import {APP_ID} from "./Const";
 
-export async function request(url, data) {
+export async function request(url, data, auth = true) {
   if (!url) {
     return;
   }
   const urlArray = url.split(" ");
   url = urlArray[0]
   const method = urlArray[1] || 'GET'
-  return requestBase({url, method, data})
+  return requestBase({url, method, data},auth)
 }
 
 export async function requestBase(data, auth = true) {
@@ -149,6 +149,12 @@ export async function wxLogin() {
   })
 }
 
+export async function getLoginCodeSession() {
+  let {code} = await Taro.login()
+  await Taro.checkSession().catch(async () => code = await Taro.login().then(res => res.code))
+  return code
+}
+
 
 /**
  * 重新登录 系统没有该用户的时候抛出异常
@@ -157,7 +163,7 @@ export async function wxLogin() {
  */
 export async function getUserInfo() {
   try {
-    const code = await wxLogin()
+    const code = await getLoginCodeSession()
     const data = await request(USER_INFO, {code, appId: APP_ID}, false);
     if (!data || !data.token) {
       throw new Error('该用户未注册')

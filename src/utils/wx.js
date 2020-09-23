@@ -6,32 +6,20 @@ import Taro from "@tarojs/taro";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 
-export function useLoginCode() {
 
-  const interval = useRef()
-  const [code, setCode] = useState()
-
-  useEffect(async () => {
-    const r = await Taro.login()
-    setCode(r.code)
-    interval.current = setInterval(async () => {
-      const res = await Taro.login()
-      setCode(res.code)
-    }, 1000 * 60 * 4)
-    return clearInterval(interval.current)
-  }, [])
-
+export async function getLoginCodeSession() {
+  let {code} = await Taro.login()
+  await Taro.checkSession().catch(async () => code = await Taro.login().then(res => res.code))
   return code
-
 }
 
 export function useGetUserInfo() {
 
-  const code = useLoginCode()
 
   const dispatch = useDispatch()
 
   async function authorize(e) {
+    const code = await getLoginCodeSession()
     const data = await request(LOGIN, {
       code,
       encryptedData: e.detail.encryptedData,
@@ -55,9 +43,6 @@ export function useGetUserInfo() {
 }
 
 export function usePhoneNumber() {
-  const code = useLoginCode()
-  const codeRef = useRef()
-  codeRef.current = code
 
   const dispatch = useDispatch()
 
@@ -66,12 +51,9 @@ export function usePhoneNumber() {
     if (!iv || !encryptedData) {
       throw new Error('用户拒绝')
     }
-    if (!codeRef.current) {
-      throw new Error('获取code失败 请重新点击')
-    }
     const res = await request(PHONE_INFO, {
       iv,
-      code: codeRef.current,
+      code: await getLoginCodeSession(),
       encryptedData,
       signature: 'signature',
       rawData: 'rawData',
