@@ -26,47 +26,83 @@
     }
 
     .item {
-      background: #fff;
       width: 100%;
       display: flex;
       flex-direction: column;
-      padding: 40px 30px;
       box-sizing: border-box;
-
 
       .header {
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 28px;
+        color: #666666;
+        border-bottom: 2px solid #F0F4F7;
+        padding: 20px;
 
-        .name {
-          font-size: 34px;
+        .time {
+          margin-left: 20px;
+        }
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr 70px 1fr;
+        justify-content: center;
+        align-items: center;
+        grid-column-gap: 60px;
+        padding: 40px 0;
+        border-bottom: 2px solid #F0F4F7;
+
+        .block {
+          display: flex;
+          align-items: center;
+
+          .text {
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .title {
+              font-size: 38px;
+              font-weight: bold;
+              color: #333333;
+            }
+
+            .desc {
+              font-size: 28px;
+              color: #666666;
+            }
+          }
+        }
+      }
+
+      .bottom {
+        padding: 30px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .desc {
+          font-size: 24px;
+          color: #999999;
+        }
+
+        .number {
+          font-size: 42px;
           font-weight: bold;
+          color: #D0021B;
+          margin-left: 10px;
         }
 
-        .province {
-          font-size: 30px;
-          color: #4FC469;
-          margin-top: 20px;
+        .title {
+          font-size: 28px;
+          color: #999999;
         }
       }
 
-      .c-map {
-        width: 100%;
-        height: 180px;
-        margin-top: 20px;
-        border-radius: 20px;
-        overflow: hidden;
-
-        .map {
-          width: 100%;
-          height: 100%;
-        }
-
-      }
-
-      .line_text {
-        font-size: 26px;
-      }
     }
 
   }

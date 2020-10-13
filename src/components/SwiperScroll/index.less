@@ -6,37 +6,35 @@
     background-color: #fff;
     display: flex;
     width: 100%;
-    position: fixed;
     z-index: 999;
+    padding: 24px 0 10px 0;
 
     .labels-container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      margin-left: 60px;
 
       .labels {
         font-size: 30px;
-        color: #999;
+        color: #333333;
       }
 
       .active {
-        font-size: 32px;
-        color: #333;
+        font-size: 30px;
         font-weight: bold;
+        color: #CE0801;
       }
 
       .line {
-        width: 40px;
-        height: 8px;
-        background: #4FC469;
-        border-radius: 4px;
-        margin-top: 5px;
-      }
-    }
+        margin-top: 10px;
+        width: 61px;
+        height: 4px;
+        background: #CE0801;
+        border-radius: 2px;
 
-    .labels-container:not(:first-child) {
-      margin-left: 40px;
+      }
     }
 
   }

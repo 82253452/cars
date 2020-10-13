@@ -1,34 +1,17 @@
-import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_LIST, ORDER_STATUS_LIST} from "@/api";
+import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
-import PanelItem from "@/components/PanelItem";
 import SwiperScroll from "@/components/SwiperScroll";
 import {useInfiniteQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
-import {dateFormat} from "@/utils/utils";
-import {Text, View} from '@tarojs/components'
+import {Image, Text, View} from '@tarojs/components'
 import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useCallback, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
-
+import gengduo from '../../img/gengduo.png'
+import fahuo from '../../img/fahuo.png'
+import shouhuo from '../../img/shouhuo.png'
 import './index.less'
-
-const setting = {
-  skew: 0,
-  rotate: 0,
-  showLocation: false,
-  showScale: false,
-  subKey: '',
-  layerStyle: -1,
-  enableZoom: true,
-  enableScroll: true,
-  enableRotate: false,
-  showCompass: false,
-  enable3D: false,
-  enableOverlooking: false,
-  enableSatellite: false,
-  enableTraffic: false,
-}
 
 export default function () {
 
@@ -68,24 +51,62 @@ export default function () {
       Taro.stopPullDownRefresh()
     })
     return <View>
-      {data.map(r => r.list.map(d => <View className='item' onClick={() => toDetail(d)}>
-        <View className='header'>
-          <Text className='name'>{d.title}</Text>
-          <Text className='province'>{`￥${d.amount}`}</Text>
+      {data.map(r => r.list.map(d => <Panel padding={0}>
+        <View className='item' onClick={() => toDetail(d)}>
+          <View className='header'>
+            <View>
+              <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`}} />
+              <Text className='time'>2020年12月11日-2021年1月30日</Text>
+            </View>
+            <View>
+              <Text>待接单</Text>
+              <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
+            </View>
+          </View>
+          <View className='content'>
+            <View className='block' style={{justifySelf:'end'}}>
+              <Image src={fahuo} style={{width: `44rpx`, height: `44rpx`}} />
+              <View className='text'>
+                <View className='title'>温州市</View>
+                <View className='desc'>鹿城区</View>
+              </View>
+            </View>
+            <Image src={gengduo} style={{width: `59rpx`, height: `8rpx`}} />
+            <View className='block'>
+              <Image src={shouhuo} style={{width: `44rpx`, height: `44rpx`}} />
+              <View className='text'>
+                <View className='title'>温州市</View>
+                <View className='desc'>鹿城区</View>
+              </View>
+            </View>
+          </View>
+          <View className='bottom'>
+            <View>
+              <text className='desc'>费用</text>
+              <text className='number'>￥100</text>
+            </View>
+            <View className='title'>
+              <Text>9米大货车</Text>
+            </View>
+          </View>
+          {/*<View className='header'>*/}
+          {/*  <Text className='name'>{d.title}</Text>*/}
+          {/*  <Text className='province'>{`￥${d.amount}`}</Text>*/}
+          {/*</View>*/}
+          {/*<Panel padding={0} space={10}>*/}
+          {/*  <PanelItem icon='tag' paddingUD={10}>*/}
+          {/*    <View><View><Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text></View></View>*/}
+          {/*  </PanelItem>*/}
+          {/*  <PanelItem icon='phone' paddingUD={10}>*/}
+          {/*    <View><View><Text className='line_text'>{d.phone}</Text></View></View>*/}
+          {/*  </PanelItem>*/}
+          {/*  <PanelItem icon='list' paddingUD={10}>*/}
+          {/*    <View> <View><Text className='line_text'>{`起点：${d.addressFrom}`}</Text></View></View>*/}
+          {/*    <View> <View><Text className='line_text'>{`终点：${d.addressTo}`}</Text></View></View>*/}
+          {/*  </PanelItem>*/}
+          {/*</Panel>*/}
         </View>
-        <Panel padding={0} space={10}>
-          <PanelItem icon='tag' paddingUD={10}>
-            <View><View><Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text></View></View>
-          </PanelItem>
-          <PanelItem icon='phone' paddingUD={10}>
-            <View><View><Text className='line_text'>{d.phone}</Text></View></View>
-          </PanelItem>
-          <PanelItem icon='list' paddingUD={10}>
-            <View> <View><Text className='line_text'>{`起点：${d.addressFrom}`}</Text></View></View>
-            <View> <View><Text className='line_text'>{`终点：${d.addressTo}`}</Text></View></View>
-          </PanelItem>
-        </Panel>
-      </View>))}
+      </Panel>))}
     </View>
   }
 

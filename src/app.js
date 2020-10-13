@@ -7,7 +7,7 @@ import {Provider} from 'react-redux'
 import useEffectOnce from "react-use/lib/useEffectOnce";
 // eslint-disable-next-line import/first
 import 'taro-ui/dist/style/index.scss'
-import {setBoundingClientRect, setWindowHeight, setViewHeight} from "./actions/theme";
+import {setBoundingClientRect, setViewHeight, setWindowHeight} from "./actions/theme";
 import {setUser} from "./actions/user";
 import './app.less'
 import configStore from './store'
@@ -20,7 +20,6 @@ export default function ({children}) {
 
 
   useEffectOnce(() => {
-    // const {windowHeight} = Taro.getSystemInfoSync();
     const boundingClientRect = Taro.getMenuButtonBoundingClientRect();
     store.dispatch(setBoundingClientRect(boundingClientRect))
     const {windowHeight} = Taro.getSystemInfoSync();

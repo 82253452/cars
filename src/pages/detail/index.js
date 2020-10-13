@@ -1,10 +1,9 @@
 import {ORDER_DETAIL, ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_RECEIVE_ORDER, ORDER_STATUS_LIST} from "@/api";
 import NavBar from "@/components/NavBar";
 import Panel from "@/components/Panel";
-import PanelItem from "@/components/PanelItem";
-import {useMutation, useQuery} from "@/react-query/react";
+import PanelItemText from '@/components/PanelItemText'
 import {queryCache} from "@/react-query";
-import {BOTTOM_GAP} from "@/utils/Const";
+import {useMutation, useQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
 import {Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
@@ -32,6 +31,7 @@ export default function () {
 
   const [mutatePostTodo] = useMutation(
     id => request(ORDER_RECEIVE_ORDER, {id}).then(() => {
+      usePaginatedQuery
       Taro.switchTab({url: '/pages/order/index'})
     }),
     {
@@ -52,50 +52,57 @@ export default function () {
 
   return <NavBar back home title='详情'>
     <View className='index'>
-      <View>
-        <Map scale={8} className='map' latitude={data.latitudeFrom} longitude={data.longitudeFrom}
-          polyline={[{
-               points: [{
-                 latitude: data.latitudeFrom,
-                 longitude: data.longitudeFrom,
-               }, {
-                 latitude: data.latitudeTo,
-                 longitude: data.longitudeTo,
-               }],
-               width: 5,
-               color: '#4FC469',
-             }]}
-          markers={[{
+      <Map scale={8} className='map' latitude={data.latitudeFrom} longitude={data.longitudeFrom}
+        polyline={[{
+             points: [{
                latitude: data.latitudeFrom,
                longitude: data.longitudeFrom,
-               label: {
-                 content: '起点'
-               }
              }, {
                latitude: data.latitudeTo,
                longitude: data.longitudeTo,
-               label: {
-                 content: '终点'
-               }
-             }]}
-        />
-      </View>
-      <Panel padding={20}>
-        <PanelItem icon='map-pin' paddingUD={5}>
-          <Text className='title'>{data.title}</Text>
-          <Text className='desc'>{`订单编号：${data.orderNo}`}</Text>
-          <Text className='desc'>{`姓名：${data.userName}`}</Text>
-          <Text className='desc'>{`手机：${data.phone}`}</Text>
-          <Text className='desc'>{`起点：${data.addressFrom}`}</Text>
-          <Text className='desc'>{`终点：${data.addressTo}`}</Text>
-          <Text className='desc'>{`价格：￥${data.amount}`}</Text>
-          <Text className='desc'>{`备注：${data.des || ''}`}</Text>
-        </PanelItem>
-      </Panel>
-      <View className='info-button' style={{backgroundColor: `${data.status >= 4 ? '#999' : '#4FC469'}`}}
-        onClick={confirm}
-      >
-        <Text>{`${orderStatus[data.status]}`}</Text>
+             }],
+             width: 5,
+             color: '#4FC469',
+           }]}
+        markers={[{
+             latitude: data.latitudeFrom,
+             longitude: data.longitudeFrom,
+             label: {
+               content: '起点'
+             }
+           }, {
+             latitude: data.latitudeTo,
+             longitude: data.longitudeTo,
+             label: {
+               content: '终点'
+             }
+           }]}
+      />
+      <View className='info'>
+        <View className='info_list'>
+          <Panel padding={20}>
+            <PanelItemText title='订单编号' value={data.orderNo} />
+            <PanelItemText title='姓名' value={data.userName} />
+            <PanelItemText title='手机号' value={data.phone} />
+            <PanelItemText title='发货地址' value='123123' />
+            <PanelItemText title='途经地点' value='123123' />
+            <PanelItemText title='收货地址' value='123123' />
+            <PanelItemText title='发运时间' value='123123' />
+            <PanelItemText title='车型' value={data.title} />
+            <PanelItemText title='排放' value='123123' />
+            <PanelItemText title='备注' value={data.des} />
+          </Panel>
+        </View>
+        <View className='info-button'>
+          <View>
+            <Text className='desc'>费用</Text>
+            <Text className='number'>￥100</Text>
+          </View>
+          <View className='buttons'>
+            <View className='button'>申诉</View>
+            <View className='button red'>取消订单</View>
+          </View>
+        </View>
       </View>
     </View>
   </NavBar>

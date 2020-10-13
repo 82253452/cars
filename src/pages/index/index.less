@@ -1,9 +1,32 @@
+page {
+  background: #F3F5F4;
+}
+
 .index {
   flex-direction: column;
   width: 100%;
+  padding-bottom: 170px;
+  padding-top: 18px;
 
   .swiper {
-    height: 350px;
+    height: 330px;
+  }
+
+  .notice_swiper {
+    height: 100px;
+    margin: 20px 0;
+
+    .notice {
+      width: 100%;
+      height: 100px;
+      background: #FEF7E5;
+      font-size: 28px;
+      color: #F0741C;
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      box-sizing: border-box;
+    }
   }
 
   .container {
@@ -17,38 +40,69 @@
     margin-top: 30px;
   }
 
-  .item {
-    background-color: #F6F6F6;
-    border-radius: 20px;
-    height: 300px;
-    font-size: 32px;
-    font-weight: bold;
-    padding-left: 30px;
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .img_view {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    padding: 0 10px;
+    height: 320px;
 
-    .left {
+    .img {
+      width: 100%;
+      border-radius: 30px;
+      height: 320px;
+    }
+  }
+
+  .page_bottom {
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+    padding: 20px 30px;
+    display: flex;
+    z-index: 999;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    .desc {
+      font-size: 24px;
+      color: #666666;
+    }
+
+    .price {
+      font-size: 42px;
+      font-weight: bold;
+      color: #D0021B;
+      margin-left: 10px;
+    }
+
+    .right {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      align-items: center;
+    }
 
-      .desc {
-        font-size: 28px;
-        margin-top: 10px;
-        color: #999
+    .decoration {
+      text-decoration: underline;
+    }
+
+    .send_button {
+      padding: 15px 40px;
+      background: #CE0801;
+      border-radius: 15px;
+      margin-left: 20px;
+
+      text {
+        font-size: 36px;
+        font-weight: bold;
+        color: #FFFFFF;
       }
     }
-
-    .item_img {
-      border-radius: 20px;
-      width: 100%;
-      height: 100%;
-    }
   }
 
-  .img {
-    width: 100%;
-  }
+
 }
 

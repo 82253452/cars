@@ -1,6 +1,7 @@
 export default {
   pages: [
     'pages/index/index',
+    'pages/address/index',
     'pages/center/center',
     'pages/authorize/index',
     'pages/order/index',
@@ -24,21 +25,29 @@ export default {
   },
   tabBar: {
     borderStyle: 'white',
+    selectedColor:'#CE0801',
+    color:' #7F8389',
     list: [{
       text: '首页',
       iconPath: 'img/shouye.png',
-      selectedIconPath: 'img/shouye@2x.png',
+      selectedIconPath: 'img/shouye.png',
       pagePath: 'pages/index/index',
     },
       {
         text: '订单',
-        iconPath: 'img/qiuhuo.png',
+        iconPath: 'img/dingdan.png',
         selectedIconPath: 'img/qiuhuoa.png',
         pagePath: 'pages/order/index'
       },
       {
-        text: '我的',
-        iconPath: 'img/wode.png',
+        text: '积分商城',
+        iconPath: 'img/jifenshangcheng.png',
+        selectedIconPath: 'img/wodea.png',
+        pagePath: 'pages/center/center'
+      },
+      {
+        text: '个人中心',
+        iconPath: 'img/gerenzhongxin.png',
         selectedIconPath: 'img/wodea.png',
         pagePath: 'pages/center/center'
       }]

@@ -1,4 +1,4 @@
-import {SET_BOUNDING_CLIENT_RECT, SET_VIEW_HEIGHT, SET_WINDOW_HEIGHT} from "@/constants/theme";
+import {SET_BOUNDING_CLIENT_RECT, SET_TABBAR_HEIGHT, SET_VIEW_HEIGHT, SET_WINDOW_HEIGHT} from "@/constants/theme";
 
 const INITIAL_STATE = {
   boundingClientRect: {},
@@ -22,6 +22,11 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         viewHeight: action.state,
+      }
+    case SET_TABBAR_HEIGHT:
+      return {
+        ...state,
+        tabBarHeight: action.state,
       }
     default:
       return state
