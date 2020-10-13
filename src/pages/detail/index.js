@@ -20,6 +20,8 @@ export default function () {
 
   const orderStatus = {0: '抢单', 1: '完成', 2: '确认完成', 3: '确认完成', 4: '已完结', 5: '派送取消', 6: '派送异常', 7: '派送超时'}
 
+  const discharge = ['国四', '国五', '国六']
+
   const {
     data = {
       latitudeFrom: 39.99126,
@@ -31,7 +33,6 @@ export default function () {
 
   const [mutatePostTodo] = useMutation(
     id => request(ORDER_RECEIVE_ORDER, {id}).then(() => {
-      usePaginatedQuery
       Taro.switchTab({url: '/pages/order/index'})
     }),
     {
@@ -52,7 +53,7 @@ export default function () {
 
   return <NavBar back home title='详情'>
     <View className='index'>
-      <Map scale={8} className='map' latitude={data.latitudeFrom} longitude={data.longitudeFrom}
+      <Map scale={8} className='map' latitude={data.latitudeFrom-1.2} longitude={data.longitudeFrom}
         polyline={[{
              points: [{
                latitude: data.latitudeFrom,
@@ -81,16 +82,15 @@ export default function () {
       <View className='info'>
         <View className='info_list'>
           <Panel padding={20}>
-            <PanelItemText title='订单编号' value={data.orderNo} />
             <PanelItemText title='姓名' value={data.userName} />
             <PanelItemText title='手机号' value={data.phone} />
-            <PanelItemText title='发货地址' value='123123' />
-            <PanelItemText title='途经地点' value='123123' />
-            <PanelItemText title='收货地址' value='123123' />
-            <PanelItemText title='发运时间' value='123123' />
-            <PanelItemText title='车型' value={data.title} />
-            <PanelItemText title='排放' value='123123' />
-            <PanelItemText title='备注' value={data.des} />
+            <PanelItemText title='发货地址' value={data.addressFrom} />
+            <PanelItemText title='途经地点' value={data.addressRoute} />
+            <PanelItemText title='收货地址' value={data.addressTo} />
+            <PanelItemText title='发运时间' value={data.deliveryTimeStart} />
+            <PanelItemText title='车型' value={data.productName} />
+            <PanelItemText title='排放' value={discharge[data.discharge-1]} />
+            <PanelItemText title='备注' value={data.remark} />
           </Panel>
         </View>
         <View className='info-button'>

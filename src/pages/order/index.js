@@ -24,6 +24,8 @@ export default function () {
 
   const indexRef = useRef(0)
 
+  const orderStatus = {0: '#CE0801', 1: '#F0741C', 2: '#02BB00'}
+
   function refreshDom() {
     const query = Taro.createSelectorQuery()
     query.select(`.container .item_content_${indexRef.current}`).boundingClientRect().exec(res => {
@@ -59,7 +61,7 @@ export default function () {
               <Text className='time'>2020年12月11日-2021年1月30日</Text>
             </View>
             <View>
-              <Text>待接单</Text>
+              <Text style={{color:orderStatus[d.status]||'#000'}}>待接单</Text>
               <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
             </View>
           </View>
@@ -67,16 +69,16 @@ export default function () {
             <View className='block' style={{justifySelf:'end'}}>
               <Image src={fahuo} style={{width: `44rpx`, height: `44rpx`}} />
               <View className='text'>
-                <View className='title'>温州市</View>
-                <View className='desc'>鹿城区</View>
+                <View className='title'>{d.addressCityFrom}</View>
+                <View className='desc'>{d.addressDistrictFrom}</View>
               </View>
             </View>
             <Image src={gengduo} style={{width: `59rpx`, height: `8rpx`}} />
             <View className='block'>
               <Image src={shouhuo} style={{width: `44rpx`, height: `44rpx`}} />
               <View className='text'>
-                <View className='title'>温州市</View>
-                <View className='desc'>鹿城区</View>
+                <View className='title'>{d.addressCityTo}</View>
+                <View className='desc'>{d.addressDistrictTo}</View>
               </View>
             </View>
           </View>
@@ -86,7 +88,7 @@ export default function () {
               <text className='number'>￥100</text>
             </View>
             <View className='title'>
-              <Text>9米大货车</Text>
+              <Text>{d.productName}</Text>
             </View>
           </View>
           {/*<View className='header'>*/}

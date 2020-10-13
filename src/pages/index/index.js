@@ -167,7 +167,10 @@ function Content() {
   return <Panel>
     <PanelItemSelect title='车型' placeHolder='请选择车型' range={cars.list.map(c => c.title)}
       value={cars.list.find(c => c.id === data.carTypeId)?.title}
-      onChange={v => dispatch(setData({carTypeId: cars.list[v].id}))}
+      onChange={v => {
+        dispatch(setData({carTypeId: cars.list[v].id}))
+        dispatch(setData({carTypeName: cars.list[v].title}))
+      }}
     />
     <PanelItemSelect title='排放' range={discharge} placeHolder='请选择排放'
       onChange={v => dispatch(setData({discharge: v*1+1}))} value={data.discharge&&discharge[data.discharge-1]}
@@ -202,6 +205,8 @@ function SendProduct() {
       })
       return
     }
+
+    console.log(data)
 
     request(ORDER_SUBMIT, data).then(() => {
       Taro.switchTab({url: '/pages/order/index'})

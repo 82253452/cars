@@ -1,11 +1,15 @@
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
 import PanelItemLineInput from '@/components/PanelItemLineInput'
+import {WX_KEY} from "@/utils/Const";
 import {Map, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
 import './index.less'
+
+// eslint-disable-next-line import/no-commonjs
+const QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
 
 export default function () {
   console.log('address')
@@ -20,7 +24,13 @@ export default function () {
     return location && data.name && data.phone && data.address
   }, [data.address, data.name, data.phone, location])
 
+  const qqMapSdkRef = useRef()
+
   useEffect(() => {
+    qqMapSdkRef.current = new QQMapWX({
+      key: WX_KEY
+    });
+    console.log(qqMapSdkRef.current)
     return () => {
       Taro.eventCenter.off("setAddress")
     }
@@ -29,7 +39,17 @@ export default function () {
 
   function selectAddress() {
     Taro.chooseLocation().then(res => {
-      setloction(res)
+      qqMapSdkRef.current.reverseGeocoder({
+        location: {
+          latitude: res.latitude,
+          longitude: res.longitude
+        },
+        success: r=> {
+          console.log(r)
+          res.info=r.result.ad_info
+          setloction(res)
+        },
+      });
     })
   }
 

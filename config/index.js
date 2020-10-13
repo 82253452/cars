@@ -1,3 +1,5 @@
+import {WX_KEY} from "@/utils/Const";
+
 const path = require('path')
 
 const config = {
@@ -13,7 +15,7 @@ const config = {
   outputRoot: 'dist',
   plugins: [],
   defineConstants: {
-    LOCATION_APIKEY: JSON.stringify('2GOBZ-3ECRI-I6CGO-5YPX5-SDXDK-ZWBSL')
+    LOCATION_APIKEY: JSON.stringify(WX_KEY)
   },
   copy: {
     patterns: [
