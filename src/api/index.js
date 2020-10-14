@@ -17,6 +17,8 @@ export const ORDER_INDEX_LIST = "/api/order/index/list"
 export const ORDER_STATUS_LIST = "/api/order/status/list"
 export const ORDER_FINASH_LIST = "/api/order/finash/list"
 export const ORDER_DETAIL = "/api/order/detail"
+export const ORDER_CLOSE = "/api/order/close"
+export const ORDER_STOP = "/api/order/stop"
 export const ORDER_SUBMIT = "/api/order/submit POST"
 export const ORDER_RECEIVE_ORDER = "/api/order/receiveOrder"
 

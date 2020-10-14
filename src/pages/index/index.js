@@ -8,10 +8,11 @@ import PanelItemMultipleSelect from '@/components/PanelItemMultipleSelect'
 import PanelItemSelect from '@/components/PanelItemSelect'
 import PanelItemTextArea from '@/components/PanelItemTextArea'
 import {useQuery} from '@/react-query'
+import {WX_KEY} from "@/utils/Const";
 import {request} from "@/utils/request";
 import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import dizhipu from '../../img/dizhipu.png'
@@ -22,6 +23,9 @@ import tianjia from '../../img/tianjia.png'
 import tujing from '../../img/tujing.png'
 import './index.less'
 
+// eslint-disable-next-line import/no-commonjs
+const QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
+
 export default function () {
   console.log('index')
 
@@ -29,8 +33,13 @@ export default function () {
   const dispatch = useDispatch()
 
   useEffectOnce(() => {
-    Taro.getLocation({type: 'wgs84'}).then(res =>  dispatch(setData({myAddress: res})))
+    Taro.getLocation({type: 'wgs84'}).then(res => dispatch(setData({myAddress: res})))
+    // Taro.startLocationUpdateBackground()
+    // Taro.onLocationChange(res=>{
+    //   console.log(res)
+    // })
   })
+
 
   return (
     <NavBar title='物流' viewBackGround='#F3F5F4'>
@@ -100,8 +109,10 @@ function Address() {
 
 
   useEffectOnce(() => {
-    Taro.getStorage({key:'addressFrom'}).then(res => {res&&res.data&&setAddressFrom(res.data)})
-    Taro.getStorage({key:'addressTo'}).then(res => res&&res.data&&setAddressTo(res.data))
+    Taro.getStorage({key: 'addressFrom'}).then(res => {
+      res && res.data && setAddressFrom(res.data)
+    })
+    Taro.getStorage({key: 'addressTo'}).then(res => res && res.data && setAddressTo(res.data))
   })
 
   function toAddressFrom() {
@@ -168,12 +179,13 @@ function Content() {
     <PanelItemSelect title='车型' placeHolder='请选择车型' range={cars.list.map(c => c.title)}
       value={cars.list.find(c => c.id === data.carTypeId)?.title}
       onChange={v => {
-        dispatch(setData({carTypeId: cars.list[v].id}))
-        dispatch(setData({carTypeName: cars.list[v].title}))
-      }}
+                       dispatch(setData({carTypeId: cars.list[v].id}))
+                       dispatch(setData({carTypeName: cars.list[v].title}))
+                     }}
     />
     <PanelItemSelect title='排放' range={discharge} placeHolder='请选择排放'
-      onChange={v => dispatch(setData({discharge: v*1+1}))} value={data.discharge&&discharge[data.discharge-1]}
+      onChange={v => dispatch(setData({discharge: v * 1 + 1}))}
+      value={data.discharge && discharge[data.discharge - 1]}
     />
     <PanelItemSelect title='发运时间' placeHolder='请选择时间' mode='date' onChange={(v, i) => {
       data.time || (data.time = ['', ''])
@@ -182,13 +194,57 @@ function Content() {
     }}
       value={data.time}
     />
-    <PanelItemTextArea title='货物描述' placeHolder='请输入货物描述，如重量体积，货物类型等' value={data.des} onChange={v => dispatch(setData({des: v}))} />
-    <PanelItemMultipleSelect title='司机优先' range={driverTop} onChange={v => dispatch(setData({driverTop: v*1+1}))} value={data.driverTop&&driverTop[data.driverTop-1]} />
+    <PanelItemTextArea title='货物描述' placeHolder='请输入货物描述，如重量体积，货物类型等' value={data.des}
+      onChange={v => dispatch(setData({des: v}))}
+    />
+    <PanelItemMultipleSelect title='司机优先' range={driverTop} onChange={v => dispatch(setData({driverTop: v * 1 + 1}))}
+      value={data.driverTop && driverTop[data.driverTop - 1]}
+    />
   </Panel>
 }
 
 function SendProduct() {
   const data = useSelector(state => state.order)
+  const qqMapSdkRef = useRef()
+  const dispatch = useDispatch()
+
+  useEffectOnce(() => {
+    qqMapSdkRef.current = new QQMapWX({
+      key: WX_KEY
+    });
+  })
+  useEffect(() => {
+    console.log('线路规划')
+    console.log(data.addressFrom)
+    console.log(data.addressTo)
+    data.addressFrom.location && data.addressTo.location && qqMapSdkRef.current.direction({
+      mode: 'driving',
+      sig: WX_KEY,
+      from: {
+        latitude: data.addressFrom.location.latitude,
+        longitude: data.addressFrom.location.longitude
+      },
+      to: {
+        latitude: data.addressTo.location.latitude,
+        longitude: data.addressTo.location.longitude
+      },
+      success: (res, d) => {
+        console.log(d)
+        console.log(d[0].distance / 1000)
+        if (d[0].distance / 1000 <= 15) {
+          dispatch(setData({amount: 380}))
+        }else if (d[0].distance / 1000 <= 50){
+          dispatch(setData({amount: parseInt(d[0].distance / 1000 * 7)}))
+        }else{
+          dispatch(setData({amount: parseInt(d[0].distance / 1000 * 5)}))
+        }
+        // d[0].distance 方案距离
+        // d[0].duration 时间
+        // d[0].polyline 方案路线坐标点串
+        // d[0].steps 路线步骤
+      },
+    });
+  }, [data.addressFrom, data.addressTo, dispatch])
 
   function confirm() {
     if (!data.addressFrom) {
@@ -213,13 +269,24 @@ function SendProduct() {
     })
   }
 
+  function handleShowPrice() {
+    Taro.showModal({
+      title: '计费规则', content: `
+    基于订单里程，按照以下定价标准计算订单价格，若运输过程中产生高速路桥费，请客户与司机协商。\n
+    起步价（15公里）          380元\n
+    分段价（16-50公里）    7元/公里\n
+    分段价（51公里以上）5-6元/公里\n
+    `, showCancel: false
+    })
+  }
+
   return <View className='page_bottom'>
     <View>
       <Text className='desc'>预计</Text>
-      <Text className='price'>￥100</Text>
+      <Text className='price'>￥{data.amount || 0}</Text>
     </View>
     <View className='right'>
-      <Text className='desc decoration'>费用规则说明</Text>
+      <Text className='desc decoration' onClick={handleShowPrice}>费用规则说明</Text>
       <View className='send_button' onClick={confirm}>
         <Text>立即发货</Text>
       </View>

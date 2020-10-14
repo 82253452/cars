@@ -9,11 +9,12 @@ export default {
     'pages/shipping/index',
     'pages/serviceLocation/index',
     'pages/companyCertification/index',
+    'pages/shop/index',
     'pages/transCompany/index',
   ],
   permission: {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+      desc: "你的位置信息将用于小程序位置接口的效果展示"
     }
   },
   window: {
@@ -43,7 +44,7 @@ export default {
         text: '积分商城',
         iconPath: 'img/jifenshangcheng.png',
         selectedIconPath: 'img/wodea.png',
-        pagePath: 'pages/center/center'
+        pagePath: 'pages/shop/index'
       },
       {
         text: '个人中心',

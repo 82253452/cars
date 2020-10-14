@@ -91,22 +91,6 @@ export default function () {
               <Text>{d.productName}</Text>
             </View>
           </View>
-          {/*<View className='header'>*/}
-          {/*  <Text className='name'>{d.title}</Text>*/}
-          {/*  <Text className='province'>{`￥${d.amount}`}</Text>*/}
-          {/*</View>*/}
-          {/*<Panel padding={0} space={10}>*/}
-          {/*  <PanelItem icon='tag' paddingUD={10}>*/}
-          {/*    <View><View><Text className='line_text'>{dateFormat('Y-m-d H:M', new Date(d.ctime))}</Text></View></View>*/}
-          {/*  </PanelItem>*/}
-          {/*  <PanelItem icon='phone' paddingUD={10}>*/}
-          {/*    <View><View><Text className='line_text'>{d.phone}</Text></View></View>*/}
-          {/*  </PanelItem>*/}
-          {/*  <PanelItem icon='list' paddingUD={10}>*/}
-          {/*    <View> <View><Text className='line_text'>{`起点：${d.addressFrom}`}</Text></View></View>*/}
-          {/*    <View> <View><Text className='line_text'>{`终点：${d.addressTo}`}</Text></View></View>*/}
-          {/*  </PanelItem>*/}
-          {/*</Panel>*/}
         </View>
       </Panel>))}
     </View>
@@ -130,7 +114,7 @@ export default function () {
 
   }, [])
   const InTransitView = useCallback(() => {
-    console.log('FinashView')
+    console.log('InTransitView')
     const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,2], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:2}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
@@ -138,11 +122,11 @@ export default function () {
 
   }, [])
   const ConfirmedView = useCallback(() => {
-    console.log('FinashView')
+    console.log('ConfirmedView')
     const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,3], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:3}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
-    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2} />
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
 
   }, [])
 
@@ -151,7 +135,7 @@ export default function () {
     const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_FINASH_LIST, (key, page = 1) => request(ORDER_FINASH_LIST,{page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
-    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={4} />
   }, [])
 
   return (

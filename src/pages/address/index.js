@@ -30,7 +30,6 @@ export default function () {
     qqMapSdkRef.current = new QQMapWX({
       key: WX_KEY
     });
-    console.log(qqMapSdkRef.current)
     return () => {
       Taro.eventCenter.off("setAddress")
     }
