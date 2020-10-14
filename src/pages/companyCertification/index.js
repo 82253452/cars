@@ -4,6 +4,7 @@ import Panel from '@/components/Panel'
 import PanelItemImage from "@/components/PanelItemImage";
 import PanelItemInputNew from "@/components/PanelItemInputNew";
 import {request} from "@/utils/request";
+import {validated} from "@/utils/utils";
 import {View} from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, {useState} from "react";
@@ -24,54 +25,35 @@ export default function () {
     legalPerson: {
       require: true,
       message: '请输入法人'
-    }
-    ,
+    },
     legalPhone: {
       require: true,
       message: '请输入法人联系方式'
-    }
-    ,
+    },
     contactsPhone: {
       require: true,
       message: '请输入负责人联系方式'
-    }
-    ,
+    },
     contactsPerson: {
       require: true,
       message: '请输入负责人'
-    }
-    ,
+    },
     address: {
       require: true,
       message: '请输入地址'
-    }
-    ,
+    },
     businessLicense: {
       require: true,
       message: '请选择营业执照'
-    }
-    ,
+    },
     organizationCodeCertificate: {
       require: true,
       message: '请选择组织代码证书'
     }
   }
 
-  function validated(param) {
-    return Object.keys(rules).every(e => {
-      if (!param[e]) {
-        Taro.showToast({
-          title: rules[e].message,
-          icon: 'none'
-        })
-        return false
-      }
-      return true
-    })
-  }
-
   async function handleSubmit() {
-    validated(data) && await request(COMPANY_CERT, data)
+    validated(rules,data) && await request(COMPANY_CERT, data)
   }
 
   return <NavBar title='企业认证' back home viewBackGround='#fff'>

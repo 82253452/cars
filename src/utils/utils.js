@@ -1,3 +1,5 @@
+import Taro from "@tarojs/taro";
+
 export function wxuuid() {
   const s = [];
   const hexDigits = "0123456789abcdef";
@@ -32,4 +34,36 @@ export function dateFormat(fmt, date) {
   return fmt;
 }
 
+export function validated(rules, param) {
+  return Object.keys(rules).every(e => {
+    if (!param[e]) {
+      Taro.showToast({
+        title: rules[e].message,
+        icon: 'none'
+      })
+      return false
+    }
+    if (typeof param[e] === 'object') {
+      if (param[e] instanceof Array) {
+        if (!param[e].length) {
+          Taro.showToast({
+            title: rules[e].message,
+            icon: 'none'
+          })
+          return false
+        }
+      } else if (param[e] instanceof Object) {
+        if (!Object.keys(param[e]).length) {
+          Taro.showToast({
+            title: rules[e].message,
+            icon: 'none'
+          })
+          return false
+        }
+      }
+    }
 
+
+    return true
+  })
+}

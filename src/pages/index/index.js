@@ -1,18 +1,19 @@
 import {setData} from "@/actions/order";
 import {BANNER_LIST, CAR_LIST, ORDER_SUBMIT} from "@/api";
+import {useMapDirectionSdkEffect, useMapLocationSdk} from "@/common/useMapLocationSdk";
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
-import PanelItemInput from '@/components/PanelItemInput'
 import PanelItemImgSelect from '@/components/PanelItemImgSelect'
+import PanelItemInput from '@/components/PanelItemInput'
 import PanelItemMultipleSelect from '@/components/PanelItemMultipleSelect'
 import PanelItemSelect from '@/components/PanelItemSelect'
 import PanelItemTextArea from '@/components/PanelItemTextArea'
 import {useQuery} from '@/react-query'
-import {WX_KEY} from "@/utils/Const";
 import {request} from "@/utils/request";
+import {validated} from "@/utils/utils";
 import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import dizhipu from '../../img/dizhipu.png'
@@ -22,9 +23,6 @@ import shouhuo from '../../img/shouhuo.png'
 import tianjia from '../../img/tianjia.png'
 import tujing from '../../img/tujing.png'
 import './index.less'
-
-// eslint-disable-next-line import/no-commonjs
-const QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
 
 export default function () {
   console.log('index')
@@ -106,7 +104,7 @@ function Address() {
 
   const [addressFrom = [], setAddressFrom] = useState()
   const [addressTo = [], setAddressTo] = useState()
-
+  const [, getLocation] = useMapLocationSdk()
 
   useEffectOnce(() => {
     Taro.getStorage({key: 'addressFrom'}).then(res => {
@@ -145,16 +143,19 @@ function Address() {
       onClick={toAddressFrom}
     />
     {data.addressRoute?.map((a, i) => <PanelItemInput headerImg={tujing} headerImgWidth={14} headerImgHeight={14}
+      disabled
+      onInputClick={() => {
+                                                        getLocation().then(res => {
+                                                          data.addressRoute[i] = res
+                                                          dispatch(setData({addressRoute: data.addressRoute}))
+                                                        })
+                                                      }}
       tailImg={tianjia}
       tailImgWidth={26}
       tailImgHeight={26} placeHolder='请填写途径地点'
-      value={data.addressRoute[i]}
-      onChange={v => {
-                                                        data.addressRoute[i] = v
-                                                        dispatch(setData({addressRoute: data.addressRoute}))
-                                                      }}
+      value={data.addressRoute[i].name}
       onClick={() => {
-                                                        data.addressRoute.push('')
+                                                        i === 0 ? data.addressRoute.push({}) : delete data.addressRoute[i]
                                                         dispatch(setData({addressRoute: data.addressRoute}))
                                                       }}
     />)}
@@ -205,65 +206,45 @@ function Content() {
 
 function SendProduct() {
   const data = useSelector(state => state.order)
-  const qqMapSdkRef = useRef()
   const dispatch = useDispatch()
 
-  useEffectOnce(() => {
-    qqMapSdkRef.current = new QQMapWX({
-      key: WX_KEY
-    });
-  })
-  useEffect(() => {
-    console.log('线路规划')
-    console.log(data.addressFrom)
-    console.log(data.addressTo)
-    data.addressFrom.location && data.addressTo.location && qqMapSdkRef.current.direction({
-      mode: 'driving',
-      sig: WX_KEY,
-      from: {
-        latitude: data.addressFrom.location.latitude,
-        longitude: data.addressFrom.location.longitude
-      },
-      to: {
-        latitude: data.addressTo.location.latitude,
-        longitude: data.addressTo.location.longitude
-      },
-      success: (res, d) => {
-        console.log(d)
-        console.log(d[0].distance / 1000)
-        if (d[0].distance / 1000 <= 15) {
-          dispatch(setData({amount: 380}))
-        }else if (d[0].distance / 1000 <= 50){
-          dispatch(setData({amount: parseInt(d[0].distance / 1000 * 7)}))
-        }else{
-          dispatch(setData({amount: parseInt(d[0].distance / 1000 * 5)}))
-        }
-        // d[0].distance 方案距离
-        // d[0].duration 时间
-        // d[0].polyline 方案路线坐标点串
-        // d[0].steps 路线步骤
-      },
-    });
-  }, [data.addressFrom, data.addressTo, dispatch])
+  const rules = {
+    addressFrom: {
+      require: true,
+      message: '请选择发货地址'
+    }, addressTo: {
+      require: true,
+      message: '请选择收获地址'
+    }, carTypeId: {
+      require: true,
+      message: '请选择车型'
+    }, carTypeName: {
+      require: true,
+      message: '请选择车型'
+    }, time: {
+      require: true,
+      message: '请选择车型'
+    }
+  }
+  useMapDirectionSdkEffect({from: {
+      latitude: data.addressFrom?.location?.latitude,
+      longitude: data.addressFrom?.location?.longitude
+    },
+    to: {
+      latitude: data.addressTo?.location?.latitude,
+      longitude: data.addressTo?.location?.longitude
+    }},(d)=>{
+    if (d[0].distance / 1000 <= 15) {
+      dispatch(setData({amount: 380}))
+    } else if (d[0].distance / 1000 <= 50) {
+      dispatch(setData({amount: parseInt(d[0].distance / 1000 * 7)}))
+    } else {
+      dispatch(setData({amount: parseInt(d[0].distance / 1000 * 5)}))
+    }
+  },[data.addressFrom, data.addressTo])
 
   function confirm() {
-    if (!data.addressFrom) {
-      Taro.showToast({
-        title: '请选择发货地址',
-        icon: 'none'
-      })
-      return
-    }
-    if (!data.addressTo) {
-      Taro.showToast({
-        title: '请选择收获地址',
-        icon: 'none'
-      })
-      return
-    }
-
-    console.log(data)
-
+    if (!validated(rules, data)) return
     request(ORDER_SUBMIT, data).then(() => {
       Taro.switchTab({url: '/pages/order/index'})
     })

@@ -24,11 +24,13 @@ const config = {
   framework: 'react',
   alias: {
     '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/common': path.resolve(__dirname, '..', 'src/common'),
     '@/utils': path.resolve(__dirname, '..', 'src/utils'),
     '@/actions': path.resolve(__dirname, '..', 'src/actions'),
     '@/react-query': path.resolve(__dirname, '..', 'src/react-query/src'),
     '@/reducers': path.resolve(__dirname, '..', 'src/reducers'),
     '@/constants': path.resolve(__dirname, '..', 'src/constants'),
+    '@/img': path.resolve(__dirname, '..', 'src/img'),
     '@/api': path.resolve(__dirname, '..', 'src/api'),
   },
   mini: {
