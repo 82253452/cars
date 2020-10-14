@@ -7,7 +7,7 @@ import guanbi from "../../img/guanbi.png";
 import './index.less'
 
 
-export default function Index({max = 9, onChange, children, style, width, height, close, value}) {
+export default function Index({max = 9, onChange, children, style, width=124, height=124, close, value,demo}) {
   // const url = 'https://kan-jian.oss-cn-beijing.aliyuncs.com'
   const url = 'http://img.zhihuizhan.net'
   const [images, setImages] = useState(value ? value.split(',') : []);
@@ -62,6 +62,7 @@ export default function Index({max = 9, onChange, children, style, width, height
   return (
     <View className='img-container'>
       <View className='images-list' style={style}>
+        {images.length?'':demo}
         {images.map((item, i) => <View key={i} className='close-view'>
           <Image className='image' src={item} style={`width:${width}rpx;height:${height}rpx`} />
           <Image className='close' src={guanbi} onClick={() => deleteImg(i)}

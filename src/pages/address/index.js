@@ -2,10 +2,11 @@ import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
 import PanelItemLineInput from '@/components/PanelItemLineInput'
 import {WX_KEY} from "@/utils/Const";
-import {Map, Text, View} from '@tarojs/components'
+import {Image, Map, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
+import gengduoju from "../../img/gengduoju.png";
 import './index.less'
 
 // eslint-disable-next-line import/no-commonjs
@@ -43,9 +44,9 @@ export default function () {
           latitude: res.latitude,
           longitude: res.longitude
         },
-        success: r=> {
+        success: r => {
           console.log(r)
-          res.info=r.result.ad_info
+          res.info = r.result.ad_info
           setloction(res)
         },
       });
@@ -89,6 +90,7 @@ export default function () {
           <Panel>
             {location ? <View /> : <View className='select_address' onClick={selectAddress}>
               <Text>选择地址</Text>
+              <Image src={gengduoju} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
             </View>}
             <PanelItemLineInput title='姓名' placeHolder='请填写发货人的姓名' value={data.name}
               onChange={v => setData({...data, name: v})}

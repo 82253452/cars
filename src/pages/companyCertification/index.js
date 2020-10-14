@@ -1,13 +1,12 @@
 import {COMPANY_CERT} from "@/api";
-import ImageSelecter from '@/components/ImageSelecter'
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
-import PanelItem from '@/components/PanelItem'
+import PanelItemImage from "@/components/PanelItemImage";
+import PanelItemInputNew from "@/components/PanelItemInputNew";
 import {request} from "@/utils/request";
-import {Button, Form, View} from "@tarojs/components";
+import {View} from "@tarojs/components";
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
-import {AtForm, AtIcon, AtInput} from "taro-ui";
 import './index.less'
 
 export default function () {
@@ -21,65 +20,26 @@ export default function () {
   }
 
   return <NavBar title='企业认证' back home viewBackGround='#fff'>
-    <Form onSubmit={handleSubmit}>
-      <View className='container'>
-        <Panel padding={0}>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='name' value={data.name} placeholder='企业名称' />
-          </PanelItem>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='legalPerson' value={data.legalPerson} placeholder='企业法人' />
-          </PanelItem>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='legalPhone' value={data.legalPhone} placeholder='法人联系方式' />
-          </PanelItem>
-        </Panel>
+    <View className='container'>
+      <Panel padding={0} space={0} borderRadius={0}>
+        <PanelItemInputNew title='公司名称' value={data.name} placeholder='请输入公司名称' onChange={e=>setData({...data,name:e})} />
+        <PanelItemInputNew title='法人' type='number' value={data.legalPerson} placeholder='请输入法人' onChange={e=>setData({...data,legalPerson:e})} />
+        <PanelItemInputNew title='法人联系方式' value={data.legalPhone} placeholder='请输入法人联系方式' onChange={e=>setData({...data,legalPhone:e})} />
+        <PanelItemInputNew title='负责人' type='number' value={data.contactsPerson} placeholder='请输入负责人' onChange={e=>setData({...data,contactsPerson:e})} />
+        <PanelItemInputNew title='负责人联系方式' value={data.contactsPhone} placeholder='请输入负责人联系方式' onChange={e=>setData({...data,contactsPhone:e})} />
+        <PanelItemInputNew title='地址' value={data.address} placeholder='请输入地址' onChange={e=>setData({...data,address:e})} />
+        <PanelItemInputNew title='邮箱' value={data.email} placeholder='请输入邮箱' onChange={e=>setData({...data,email:e})} />
+      </Panel>
 
-        <Panel space={10} padding={0}>
-          <PanelItem title='营业执照'>
-            <View className='image-list'>
-              <ImageSelecter value={data.img} width={100} height={100} onChange={(e) => data.img = e}>
-                <View className='up-img'>
-                  <AtIcon value='upload' color='#f5f5f5' />
-                </View>
-              </ImageSelecter>
-            </View>
-          </PanelItem>
-        </Panel>
+      <Panel padding={0} space={0} borderRadius={0}>
+        <PanelItemImage title='营业执照' desc='正面照清晰无遮挡' value={data.businessLicense} onChange={e=>setData({...data,businessLicense:e})} />
+        <PanelItemImage title='组织代码证书' desc='正面照清晰无遮挡' value={data.organizationCodeCertificate} onChange={e=>setData({...data,organizationCodeCertificate:e})} />
+      </Panel>
 
-        <Panel space={10} padding={0}>
-          <PanelItem title='组织机构代码证'>
-            <View className='image-list'>
-              <ImageSelecter value={data.img} width={200} height={200}>
-                <View className='up-img'>
-                  <AtIcon value='upload' color='#f5f5f5' />
-                </View>
-              </ImageSelecter>
-            </View>
-          </PanelItem>
-        </Panel>
-
-        <Panel space={10} padding={0}>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='address' value={data.name} placeholder='公司地址' />
-          </PanelItem>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='contactsPerson' value={data.name} placeholder='企业负责人' />
-          </PanelItem>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='contactsPhone' value={data.name} placeholder='负责人联系方式' />
-          </PanelItem>
-          <PanelItem icon='bullet-list'>
-            <AtInput name='email' value={data.name} placeholder='邮箱地址' />
-          </PanelItem>
-        </Panel>
-        <View className='button'>
-          <Button className='submit' formType='submit'>
-            提交
-          </Button>
-        </View>
+      <View className='button' onClick={handleSubmit}>
+        提交
       </View>
-    </Form>
+    </View>
   </NavBar>
 
 }

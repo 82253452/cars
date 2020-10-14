@@ -8,9 +8,11 @@ import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useCallback, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
-import gengduo from '../../img/gengduo.png'
 import fahuo from '../../img/fahuo.png'
+import gengduo from '../../img/gengduo.png'
 import shouhuo from '../../img/shouhuo.png'
+import shijian from '../../img/shijian.png'
+import lujing from '../../img/lujing.png'
 import './index.less'
 
 export default function () {
@@ -24,7 +26,40 @@ export default function () {
 
   const indexRef = useRef(0)
 
-  const orderStatus = {0: '#CE0801', 1: '#F0741C', 2: '#02BB00'}
+  const orderStatus = {
+    0: {
+      text: '待接单',
+      color: '#CE0801'
+    },
+    1: {
+      text: '待配送',
+      color: '#F0741C'
+    },
+    2: {
+      text: '配送中',
+      color: '#02BB00'
+    },
+    3: {
+      text: '待完成',
+      color: '#333333'
+    },
+    4: {
+      text: '已完成',
+      color: '#333333'
+    },
+    5: {
+      text: '派送取消',
+      color: '#333333'
+    },
+    6: {
+      text: '派送异常',
+      color: '#333333'
+    },
+    7: {
+      text: '派送超时',
+      color: '#333333'
+    },
+  }
 
   function refreshDom() {
     const query = Taro.createSelectorQuery()
@@ -56,24 +91,24 @@ export default function () {
       {data.map(r => r.list.map(d => <Panel padding={0}>
         <View className='item' onClick={() => toDetail(d)}>
           <View className='header'>
-            <View>
-              <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`}} />
+            <View style={{display:'flex',alignItems:'center'}}>
+              <Image src={shijian} style={{width: `30rpx`, height: `30rpx`}} />
               <Text className='time'>2020年12月11日-2021年1月30日</Text>
             </View>
             <View>
-              <Text style={{color:orderStatus[d.status]||'#000'}}>待接单</Text>
+              <Text style={{color: orderStatus[d.status].color}}>{orderStatus[d.status].text}</Text>
               <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
             </View>
           </View>
           <View className='content'>
-            <View className='block' style={{justifySelf:'end'}}>
+            <View className='block' style={{justifySelf: 'end'}}>
               <Image src={fahuo} style={{width: `44rpx`, height: `44rpx`}} />
               <View className='text'>
                 <View className='title'>{d.addressCityFrom}</View>
                 <View className='desc'>{d.addressDistrictFrom}</View>
               </View>
             </View>
-            <Image src={gengduo} style={{width: `59rpx`, height: `8rpx`}} />
+            <Image src={lujing} style={{width: `70rpx`, height: `8rpx`}} />
             <View className='block'>
               <Image src={shouhuo} style={{width: `44rpx`, height: `44rpx`}} />
               <View className='text'>
@@ -96,52 +131,71 @@ export default function () {
     </View>
   }
 
-  const ListCurrentView = useCallback(() => {
-    console.log('ListCurrentView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST,{page}), {
+  const AllListCurrentView = useCallback(() => {
+    console.log('AllListCurrentView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0} />
 
   }, [])
 
-  const ReceiveView = useCallback(() => {
-    console.log('ReceiveView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,1], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:1}), {
+  const ListCurrentView = useCallback(() => {
+    console.log('ListCurrentView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST, {page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1} />
 
   }, [])
-  const InTransitView = useCallback(() => {
-    console.log('InTransitView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,2], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:2}), {
+
+  const ReceiveView = useCallback(() => {
+    console.log('ReceiveView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 1], (key, page = 1) => request(ORDER_STATUS_LIST, {
+      page,
+      status: 1
+    }), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2} />
 
   }, [])
-  const ConfirmedView = useCallback(() => {
-    console.log('ConfirmedView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST,3], (key, page = 1) =>  request(ORDER_STATUS_LIST,{page,status:3}), {
+  const InTransitView = useCallback(() => {
+    console.log('InTransitView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 2], (key, page = 1) => request(ORDER_STATUS_LIST, {
+      page,
+      status: 2
+    }), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3} />
 
   }, [])
-
-  const FinalView = useCallback(() => {
-    console.log('FinalView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_FINASH_LIST, (key, page = 1) => request(ORDER_FINASH_LIST,{page}), {
+  const ConfirmedView = useCallback(() => {
+    console.log('ConfirmedView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 3], (key, page = 1) => request(ORDER_STATUS_LIST, {
+      page,
+      status: 3
+    }), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={4} />
+
+  }, [])
+
+  const FinalView = useCallback(() => {
+    console.log('FinalView')
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_FINASH_LIST, (key, page = 1) => request(ORDER_FINASH_LIST, {page}), {
+      getFetchMore: lastGroup => lastGroup.nextPage
+    })
+    return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={5} />
   }, [])
 
   return (
     <View className='index'>
       <View className='item_container'>
-        <SwiperScroll labels={['抢单', '派单', '派送中', '待确认','已完结']} onChange={indexChange} swiperH={swiperHeight}>
+        <SwiperScroll labels={['全部', '抢单', '派单', '派送中', '待确认', '已完结']} onChange={indexChange} swiperH={swiperHeight}>
+          <AllListCurrentView />
           <ListCurrentView />
           <ReceiveView />
           <InTransitView />

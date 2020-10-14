@@ -1,5 +1,5 @@
 import NavBar from '@/components/NavBar'
-import {Swiper, SwiperItem, Text, View} from "@tarojs/components";
+import {ScrollView, Swiper, SwiperItem, Text, View} from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React, {useMemo, useState} from "react";
 import {useSelector} from "react-redux";
@@ -70,9 +70,11 @@ export default function ({
 
   return <NavBar title='订单页' viewBackGround='#F3F5F4'>
     <View className='container'>
-      <View className='item_header'>
-        {labelView}
-      </View>
+      <ScrollView scrollX className='scroll_view'>
+        <View className='item_header'>
+          {labelView}
+        </View>
+      </ScrollView>
       <Swiper
         className={`item_swiper ${className}`}
         onChange={selectChange}

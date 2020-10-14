@@ -10,6 +10,7 @@ export default {
     'pages/serviceLocation/index',
     'pages/companyCertification/index',
     'pages/shop/index',
+    'pages/driver/index',
     'pages/transCompany/index',
   ],
   permission: {
@@ -30,26 +31,26 @@ export default {
     color:' #7F8389',
     list: [{
       text: '首页',
-      iconPath: 'img/shouye.png',
+      iconPath: 'img/shouyeb.png',
       selectedIconPath: 'img/shouye.png',
       pagePath: 'pages/index/index',
     },
       {
         text: '订单',
         iconPath: 'img/dingdan.png',
-        selectedIconPath: 'img/qiuhuoa.png',
+        selectedIconPath: 'img/adingdan.png',
         pagePath: 'pages/order/index'
       },
       {
         text: '积分商城',
         iconPath: 'img/jifenshangcheng.png',
-        selectedIconPath: 'img/wodea.png',
+        selectedIconPath: 'img/ajifenshangcheng.png',
         pagePath: 'pages/shop/index'
       },
       {
         text: '个人中心',
         iconPath: 'img/gerenzhongxin.png',
-        selectedIconPath: 'img/wodea.png',
+        selectedIconPath: 'img/agerenzhongxin.png',
         pagePath: 'pages/center/center'
       }]
   }
