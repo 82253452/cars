@@ -1,7 +1,7 @@
 import ImageSelecter from "@/components/ImageSelecter";
 import {Image, Text, View} from "@tarojs/components";
 import React from "react";
-import upImg from "../../img/upImg.png";
+import upImg from "@/img/upImg.png";
 import './index.less'
 
 export default function ({title, value, onChange,desc}) {

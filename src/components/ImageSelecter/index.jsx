@@ -3,7 +3,7 @@ import {request} from "@/utils/request";
 import {Image, View} from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import React, {useState} from "react";
-import guanbi from "../../img/guanbi.png";
+import guanbi from "@/img/guanbi.png";
 import './index.less'
 
 

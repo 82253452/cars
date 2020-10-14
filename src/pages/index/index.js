@@ -16,12 +16,12 @@ import Taro from "@tarojs/taro";
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import useEffectOnce from "react-use/lib/useEffectOnce";
-import dizhipu from '../../img/dizhipu.png'
-import fahuo from '../../img/fahuo.png'
-import gonggao from '../../img/gonggao.png'
-import shouhuo from '../../img/shouhuo.png'
-import tianjia from '../../img/tianjia.png'
-import tujing from '../../img/tujing.png'
+import dizhipu from '@/img/dizhipu.png'
+import fahuo from '@/img/fahuo.png'
+import gonggao from '@/img/gonggao.png'
+import shouhuo from '@/img/shouhuo.png'
+import tianjia from '@/img/tianjia.png'
+import tujing from '@/img/tujing.png'
 import './index.less'
 
 export default function () {

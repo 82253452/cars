@@ -5,7 +5,7 @@ import {Button, Image, Text, View} from "@tarojs/components";
 import Taro from '@tarojs/taro'
 import React from "react";
 import {useSelector} from "react-redux";
-import avatar from '../../img/logo.png'
+import avatar from '@/img/logo.png'
 import './center.less'
 
 export default function () {

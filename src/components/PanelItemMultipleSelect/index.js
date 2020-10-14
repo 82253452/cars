@@ -1,6 +1,6 @@
 import {Image, Text, View} from "@tarojs/components";
 import React, {useState} from "react";
-import gengduo from '../../img/gengduo.png'
+import gengduo from '@/img/gengduo.png'
 
 
 import './index.less'

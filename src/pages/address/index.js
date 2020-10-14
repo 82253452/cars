@@ -7,7 +7,7 @@ import {Image, Map, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
 import React, {useEffect, useMemo, useState} from 'react'
 import {useSelector} from "react-redux";
-import gengduoju from "../../img/gengduoju.png";
+import gengduoju from "@/img/gengduoju.png";
 import './index.less'
 
 export default function () {

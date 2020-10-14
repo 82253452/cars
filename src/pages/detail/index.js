@@ -40,7 +40,7 @@ export default function () {
     }
   } = useQuery([ORDER_DETAIL, paramsId], () => request(ORDER_DETAIL, {id: paramsId}))
 
-  console.log(data)
+  console.log(data.addressRoute&&JSON.parse(data.addressRoute))
 
 
   const [nextOrder] = useMutation(
@@ -157,7 +157,7 @@ export default function () {
             <PanelItemText title='姓名' value={data.userName} />
             <PanelItemText title='手机号' value={data.phone} />
             <PanelItemText title='发货地址' value={data.addressFrom} />
-            <PanelItemText title='途经地点' value={data.addressRoute} />
+            <PanelItemText title='途经地点' value={data.addressRoute?JSON.parse(data.addressRoute).map(r=>`${r.name}`).join('-'):''} />
             <PanelItemText title='收货地址' value={data.addressTo} />
             <PanelItemText title='发运时间' value={`${data.deliveryTimeStart} -> ${data.deliveryTimeEnd}`} />
             <PanelItemText title='车型' value={data.productName} />

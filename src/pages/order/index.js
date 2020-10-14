@@ -1,6 +1,11 @@
 import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
 import SwiperScroll from "@/components/SwiperScroll";
+import fahuo from '@/img/fahuo.png'
+import gengduo from '@/img/gengduo.png'
+import lujing from '@/img/lujing.png'
+import shijian from '@/img/shijian.png'
+import shouhuo from '@/img/shouhuo.png'
 import {useInfiniteQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
 import {Image, Text, View} from '@tarojs/components'
@@ -8,11 +13,6 @@ import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useCallback, useRef, useState} from 'react'
 import {useSelector} from "react-redux";
-import fahuo from '../../img/fahuo.png'
-import gengduo from '../../img/gengduo.png'
-import shouhuo from '../../img/shouhuo.png'
-import shijian from '../../img/shijian.png'
-import lujing from '../../img/lujing.png'
 import './index.less'
 
 export default function () {
@@ -120,7 +120,7 @@ export default function () {
           <View className='bottom'>
             <View>
               <text className='desc'>费用</text>
-              <text className='number'>￥100</text>
+              <text className='number'>￥{d.amount || 0}</text>
             </View>
             <View className='title'>
               <Text>{d.productName}</Text>
@@ -133,7 +133,7 @@ export default function () {
 
   const AllListCurrentView = useCallback(() => {
     console.log('AllListCurrentView')
-    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+    const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
       getFetchMore: lastGroup => lastGroup.nextPage
     })
     return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0} />

@@ -1,7 +1,7 @@
 import {Image, Picker, Text, View} from "@tarojs/components";
 import React from "react";
-import gengduo from '../../img/gengduo.png'
-import jiantou from '../../img/jiantou.png'
+import gengduo from '@/img/gengduo.png'
+import jiantou from '@/img/jiantou.png'
 
 
 import './index.less'

@@ -3,7 +3,7 @@ import {Button, Image, View} from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import React from "react";
 import {AtNavBar} from "taro-ui";
-import logo from '../../img/logo.png'
+import logo from '@/img/logo.png'
 
 import './index.less'
 

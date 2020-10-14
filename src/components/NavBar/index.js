@@ -3,8 +3,8 @@ import {Image, Text, View} from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import React from "react";
 import {useSelector} from "react-redux";
-import backIcon from '../../img/fanhui.png'
-import homeIcon from '../../img/nav-home.png'
+import backIcon from '@/img/fanhui.png'
+import homeIcon from '@/img/nav-home.png'
 import './index.less'
 
 export default function ({title = '', fixed = true, home = false, back = false, backUrl, children, viewBackGround = '#fff'}) {
