@@ -1,6 +1,10 @@
+import {PRODUCT_LIST} from "@/api";
 import NavBar from "@/components/NavBar";
-import avatar from '@/img/logo.png'
+import {useInfiniteQuery} from "@/react-query/react";
+import {request} from "@/utils/request";
 import {Image, View} from '@tarojs/components'
+import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
+import Taro from "@tarojs/taro";
 import React from 'react'
 
 import './index.less'
@@ -9,44 +13,33 @@ export default function () {
 
   console.log('shopping')
 
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(PRODUCT_LIST, (key, page = 1) => request(PRODUCT_LIST, {page}), {
+    getFetchMore: lastGroup => lastGroup.nextPage
+  })
+
+  useReachBottom(async () => {
+    canFetchMore && await fetchMore()
+  })
+  usePullDownRefresh(async () => {
+    await refetch()
+    Taro.stopPullDownRefresh()
+  })
 
   return (
     <NavBar back home title='积分商城' viewBackGround='#F3F5F4'>
       <View className='index'>
         <View className='list'>
-          <View className='item'>
-            <Image src={avatar} />
-            <View className='title'>华为 HUAWEI Mate 30 麒麟990旗舰芯片</View>
+          {data.map(r => r.list.map(d => <View className='item'>
+            <Image src={d.img.split(',')[0]} />
+            <View className='title'>{d.name}</View>
             <View className='info'>
               <View className='info_s'>
-                <View className='price'>10 积分</View>
-                <View className='num'>剩余 500个</View>
+                <View className='price'>{d.price} 积分</View>
+                <View className='num'>剩余 {d.price}</View>
               </View>
               <View className='button'>兑换</View>
             </View>
-          </View>
-          <View className='item'>
-            <Image src={avatar} />
-            <View className='title'>华为 HUAWEI Mate 30 麒麟990旗舰芯片</View>
-            <View className='info'>
-              <View className='info_s'>
-                <View className='price'>10 积分</View>
-                <View className='num'>剩余 500个</View>
-              </View>
-              <View className='button'>兑换</View>
-            </View>
-          </View>
-          <View className='item'>
-            <Image src={avatar} />
-            <View className='title'>华为 HUAWEI Mate 30 麒麟990旗舰芯片</View>
-            <View className='info'>
-              <View className='info_s'>
-                <View className='price'>10 积分</View>
-                <View className='num'>剩余 500个</View>
-              </View>
-              <View className='button'>兑换</View>
-            </View>
-          </View>
+          </View>))}
         </View>
       </View>
     </NavBar>
