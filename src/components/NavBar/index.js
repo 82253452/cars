@@ -7,7 +7,7 @@ import backIcon from '@/img/fanhui.png'
 import homeIcon from '@/img/nav-home.png'
 import './index.less'
 
-export default function ({title = '', fixed = true, home = false, back = false, backUrl, children, viewBackGround = '#fff'}) {
+export default function ({title = '', fixed = true, home = false, back = false, backUrl, children, viewBackGround = '#F3F5F4'}) {
 
   const {boundingClientRect} = useSelector(state => state.theme)
   const {bottom, right, width, height} = boundingClientRect

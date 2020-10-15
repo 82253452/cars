@@ -17,7 +17,6 @@ export default forwardRef (({children, style, borderRadius = 15, marginTop = 20,
 
   useImperativeHandle(ref, () => ({
     drogglePanel:()=>{
-      console.log(droggle)
       if(droggle){
         animation.scale(0.01,0.01).step()
         animation.opacity(0).step({duration:10})

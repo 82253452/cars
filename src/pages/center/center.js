@@ -1,87 +1,128 @@
-import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
-import PanelItem from '@/components/PanelItem'
+import avatar from '@/img/logo.png'
+import {BOTTOM_GAP} from "@/utils/Const";
 import {Button, Image, Text, View} from "@tarojs/components";
 import Taro from '@tarojs/taro'
 import React from "react";
 import {useSelector} from "react-redux";
-import avatar from '@/img/logo.png'
 import './center.less'
 
 export default function () {
   console.log('center')
 
+  const {boundingClientRect} = useSelector(state => state.theme)
+  const {bottom, right, width, height} = boundingClientRect
   const user = useSelector(state => state.user)
 
   function userAuth() {
     Taro.navigateTo({url: '/pages/authorize/index'})
   }
 
-  function makeCall() {
-    Taro.makePhoneCall({phoneNumber: '15901320019'})
-  }
+  return <View className='container'>
+    <View className='user-info' style={{paddingTop: `${bottom + BOTTOM_GAP}px`}}>
+      <View className='info' onClick={userAuth}>
+        <Image className='avatar' src={user.avatarurl || avatar} />
+        <View className='user'>
+          <Text className='nick_name'>{user.nickname || '登录'}</Text>
+          <View className='integral'>
+            <Image src={avatar} style={{width: '26rpx', height: '34rpx'}} />
+            <Text>信誉积分：100</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+    <Header />
+    <Items />
+  </View>
+}
 
-  function toServiceLocation() {
-    Taro.navigateTo({url: '/pages/serviceLocation/index'})
-  }
-
+function Header() {
+  return <Panel marginTop={-45}>
+    <View className='header_nav'>
+      <View className='item'>
+        <Image src={avatar} style={{width: '76rpx', height: '82rpx'}} />
+        <Text>全部订单</Text>
+      </View>
+      <View className='item'>
+        <Image src={avatar} style={{width: '76rpx', height: '82rpx'}} />
+        <Text>地址薄</Text>
+      </View>
+      <View className='item'>
+        <Image src={avatar} style={{width: '76rpx', height: '82rpx'}} />
+        <Text>钱包</Text>
+      </View>
+    </View>
+  </Panel>
+}
+function Items() {
   function toCompany() {
     Taro.navigateTo({url: '/pages/companyCertification/index'})
   }
-  function toTrans() {
-    Taro.navigateTo({url: '/pages/transCompany/index'})
+  function makeCall() {
+    Taro.makePhoneCall({phoneNumber: '15901320019'})
   }
-
-  return <NavBar title='个人中心' viewBackGround='#f5f5f5'>
-    <View className='container'>
-      <View className='user-info'>
-        <View className='info' onClick={userAuth}>
-          <Image className='avatar' src={user.avatarurl || avatar} />
-          <Text className='nick_name'>{user.nickname || '登录'}</Text>
+  return <Panel space={0} borderRadius={0}>
+    <View className='items_list'>
+      <View className='header'>
+        <View className='line' />
+        <View className='text'>其他功能</View>
+      </View>
+      <View className='item'>
+        <View className='block border_bottom' onClick={toCompany}>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='button'>企业认证</View>
+            <View className='desc'>一点多票每票减40</View>
+          </View>
         </View>
-        <View className='circle'>
-          <Text className='title'>信誉</Text>
-          <Text className='number'>100</Text>
+        <View className='block border_bottom'>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='button'>司机认证</View>
+            <View className='desc'>实时货物行程信息</View>
+          </View>
+        </View>
+        <View className='block border_bottom'>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='title'>价格查询</View>
+            <View className='desc'>每公斤3毛3起</View>
+          </View>
+        </View>
+        <View className='block border_bottom'>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='title'>违禁品查询</View>
+            <View className='desc'>违禁拒收特殊规范</View>
+          </View>
+        </View>
+        <View className='block border_bottom'>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='title'>帮助中心</View>
+            <View className='desc'>常见问题快速解决</View>
+          </View>
+        </View>
+        <Button  openType='feedback' className='block border_bottom content'>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <Text className='title' style={{lineHeight:'38rpx'}}>建议反馈</Text>
+            <Text className='desc' style={{lineHeight:'38rpx'}}>服务建议反馈</Text>
+          </View>
+        </Button>
+        <View className='block' onClick={makeCall}>
+          <Image src={avatar} style={{width: '45rpx', height: '45rpx'}} />
+          <View className='block_r'>
+            <View className='title'>客服</View>
+            <View className='desc'>服务时间8点-21点</View>
+          </View>
+        </View>
+        <View className='block center'>
+          <View className='block_button'>
+            邀请有奖
+          </View>
         </View>
       </View>
-
-      <Panel>
-        <PanelItem icon='credit-card'>
-          <Text>{`￥${user.amount || 0}`}</Text>
-        </PanelItem>
-        <PanelItem icon='home'>
-          <Text>{`地址 ${user.country || ''} ${user.province || ''} ${user.city || ''}`}</Text>
-        </PanelItem>
-        <PanelItem icon='phone'>
-          <Text>15901320019</Text>
-        </PanelItem>
-      </Panel>
-
-      <Panel space={10}>
-        <PanelItem icon='help'>
-          <Button openType='feedback' className='content'>
-            问题反馈
-          </Button>
-        </PanelItem>
-        <PanelItem icon='phone' onClick={makeCall}>
-          <Text>致电客服</Text>
-        </PanelItem>
-        <PanelItem icon='map-pin' onClick={toServiceLocation}>
-          <Text>服务网点</Text>
-        </PanelItem>
-      </Panel>
-
-      <Panel space={10}>
-        <PanelItem icon='filter' onClick={toTrans}>
-          <Text>物流公司</Text>
-        </PanelItem>
-        <PanelItem icon='eye' onClick={toCompany}>
-          <Text>企业认证</Text>
-        </PanelItem>
-      </Panel>
-
     </View>
-  </NavBar>
-
+  </Panel>
 }
-
