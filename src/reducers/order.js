@@ -1,7 +1,7 @@
 import {SET_DATA} from "@/constants/order";
 
 const INITIAL_STATE = {
-  addressRoute:[''],
+  addressRoute:[{}],
   addressFrom:{},
   addressTo:{},
   myAddress:{},

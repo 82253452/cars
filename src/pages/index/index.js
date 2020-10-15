@@ -8,6 +8,12 @@ import PanelItemInput from '@/components/PanelItemInput'
 import PanelItemMultipleSelect from '@/components/PanelItemMultipleSelect'
 import PanelItemSelect from '@/components/PanelItemSelect'
 import PanelItemTextArea from '@/components/PanelItemTextArea'
+import dizhipu from '@/img/dizhipu.png'
+import fahuo from '@/img/fahuo.png'
+import gonggao from '@/img/gonggao.png'
+import shouhuo from '@/img/shouhuo.png'
+import tianjia from '@/img/tianjia.png'
+import tujing from '@/img/tujing.png'
 import {useQuery} from '@/react-query'
 import {request} from "@/utils/request";
 import {validated} from "@/utils/utils";
@@ -16,12 +22,6 @@ import Taro from "@tarojs/taro";
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import useEffectOnce from "react-use/lib/useEffectOnce";
-import dizhipu from '@/img/dizhipu.png'
-import fahuo from '@/img/fahuo.png'
-import gonggao from '@/img/gonggao.png'
-import shouhuo from '@/img/shouhuo.png'
-import tianjia from '@/img/tianjia.png'
-import tujing from '@/img/tujing.png'
 import './index.less'
 
 export default function () {
@@ -233,7 +233,9 @@ function SendProduct() {
     to: {
       latitude: data.addressTo?.location?.latitude,
       longitude: data.addressTo?.location?.longitude
-    }},(d)=>{
+    },
+    waypoints:data.addressRoute.map(r=>r.latitude&&r.longitude?`${r.latitude?.toString()},${r.longitude?.toString()}`:'').join(';')
+  },(d)=>{
     if (d[0].distance / 1000 <= 15) {
       dispatch(setData({amount: 380}))
     } else if (d[0].distance / 1000 <= 50) {

@@ -1,28 +1,25 @@
 import NavBar from '@/components/NavBar'
 import {ScrollView, Swiper, SwiperItem, Text, View} from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import React, {useMemo, useState} from "react";
+import React, {createRef, forwardRef, useImperativeHandle, useState} from "react";
 import {useSelector} from "react-redux";
 import useEffectOnce from "react-use/lib/useEffectOnce";
 import useUpdateEffect from "react-use/lib/useUpdateEffect";
 import './index.less'
 
-export default function ({
-                           className = '',
-                           itemClassNam = '',
-                           labels = [],
-                           children,
-                           onChange,
-                           swiperH
-                         }) {
+export default forwardRef(({
+                             className = '',
+                             itemClassNam = '',
+                             labels = [],
+                             children,
+                             onChange,
+                             swiperH
+                           }, ref) => {
 
   console.log('swiperScroll')
-
   const {viewHeight, boundingClientRect} = useSelector(state => state.theme)
-  const {right, top} = boundingClientRect
   const [current, setCurrent] = useState(0)
   const [swiperHeight, setSwiperHeight] = useState(viewHeight)
-
   useEffectOnce(() => {
     setTimeout(() => {
       refreshDom()
@@ -35,8 +32,14 @@ export default function ({
 
   useUpdateEffect(() => {
     refreshDom()
-    onChange(current)
+    onChange&&onChange(current)
   }, [current])
+
+  useImperativeHandle(ref, () => ({
+    current,
+    setSwiperHeight
+  }))
+
 
   function refreshDom() {
     const query = Taro.createSelectorQuery()
@@ -45,26 +48,7 @@ export default function ({
     })
   }
 
-
-  const labelView = useMemo(() => {
-    console.log('labelView')
-    return labels.map((l, i) => <View className='labels-container'>
-      <Text onClick={() => setCurrent(i)} className={`labels ${i === current && 'active'}`}>{l}</Text>
-      {i === current && <View className='line' />}
-    </View>)
-  }, [current, labels])
-
-  const switerItem = useMemo(() => {
-    console.log('swiperitem')
-    return labels.map((l, i) => <SwiperItem className={`swiper_item ${itemClassNam}`}>
-      <View className={`item_content_${i}`}>
-        {children[i]}
-      </View>
-    </SwiperItem>)
-  }, [children, itemClassNam, labels])
-
   function selectChange({detail}) {
-    console.log(detail)
     setCurrent(detail.current)
   }
 
@@ -72,7 +56,10 @@ export default function ({
     <View className='container'>
       <ScrollView scrollX className='scroll_view'>
         <View className='item_header'>
-          {labelView}
+          {labels.map((l, i) => <View className='labels-container'>
+            <Text onClick={() => setCurrent(i)} className={`labels ${i === current && 'active'}`}>{l}</Text>
+            {i === current && <View className='line' />}
+          </View>)}
         </View>
       </ScrollView>
       <Swiper
@@ -81,9 +68,12 @@ export default function ({
         current={current}
         style={{height: `${swiperHeight}px`}}
       >
-        {switerItem}
+        {labels.map((l, i) => <SwiperItem className={`swiper_item ${itemClassNam}`}>
+          <View className={`item_content_${i}`}>
+            {children[i]}
+          </View>
+        </SwiperItem>)}
       </Swiper>
     </View>
   </NavBar>
-
-}
+})

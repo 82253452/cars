@@ -39,8 +39,7 @@ export function useMapLocationSdk() {
   return [location, getLocation]
 }
 
-export function useMapDirectionSdkEffect({from, to}, effect, deps) {
-
+export function useMapDirectionSdkEffect({from, to,waypoints}, effect, deps) {
   const qqMapSdkRef = useRef()
   useEffectOnce(() => {
     qqMapSdkRef.current = new QQMapWX({
@@ -60,6 +59,7 @@ export function useMapDirectionSdkEffect({from, to}, effect, deps) {
         sig: WX_KEY,
         from,
         to,
+        waypoints,
         success: (res, d) => {
           resolve(d)
         },
@@ -67,4 +67,3 @@ export function useMapDirectionSdkEffect({from, to}, effect, deps) {
     })
   }
 }
-
