@@ -39,7 +39,15 @@ export function useMapLocationSdk() {
   return [location, getLocation]
 }
 
-export function useMapDirectionSdkEffect({from, to,waypoints}, effect, deps) {
+/**
+ * https://lbs.qq.com/miniProgram/jsSdk/jsSdkGuide/methodDirection
+ * @param from
+ * @param to
+ * @param waypoints
+ * @param effect
+ * @param deps
+ */
+export function useMapDirectionSdkEffect({from, to, waypoints}, effect, deps) {
   const qqMapSdkRef = useRef()
   useEffectOnce(() => {
     qqMapSdkRef.current = new QQMapWX({
@@ -48,22 +56,23 @@ export function useMapDirectionSdkEffect({from, to,waypoints}, effect, deps) {
   })
 
   useUpdateEffect(() => {
-    direction().then(res=>effect(res))
-  }, [deps])
+    async function direction() {
+      return new Promise((resolve, reject) => {
+        qqMapSdkRef.current.direction({
+          mode: 'driving',
+          sig: WX_KEY,
+          from,
+          to,
+          waypoints,
+          success: (res, d) => {
+            resolve(d)
+          },
+        });
+      })
+    }
+
+    direction().then(res => effect(res))
+  }, deps)
 
 
-  async function direction() {
-    return new Promise((resolve, reject) => {
-      qqMapSdkRef.current.direction({
-        mode: 'driving',
-        sig: WX_KEY,
-        from,
-        to,
-        waypoints,
-        success: (res, d) => {
-          resolve(d)
-        },
-      });
-    })
-  }
 }
