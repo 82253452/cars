@@ -98,7 +98,7 @@ function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
         <View className='header'>
           <View style={{display:'flex',alignItems:'center'}}>
             <Image src={shijian} style={{width: `30rpx`, height: `30rpx`}} />
-            <Text className='time'>2020年12月11日-2021年1月30日</Text>
+            <Text className='time'>{d.deliveryTimeStart}-{d.deliveryTimeEnd}</Text>
           </View>
           <View>
             <Text style={{color: orderStatus[d.status].color}}>{orderStatus[d.status].text}</Text>
