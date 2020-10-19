@@ -73,6 +73,9 @@ function Items() {
   function makeCall() {
     Taro.makePhoneCall({phoneNumber: '15901320019'})
   }
+  function toDriver(){
+    Taro.navigateTo({url: '/pages/driver/index'})
+  }
   return <Panel space={0} borderRadius={0}>
     <View className='items_list'>
       <View className='header'>
@@ -87,7 +90,7 @@ function Items() {
             <View className='desc'>一点多票每票减40</View>
           </View>
         </View>
-        <View className='block border_bottom'>
+        <View className='block border_bottom' onClick={toDriver}>
           <Image src={sijirenzheng} style={{width: '45rpx', height: '45rpx'}} />
           <View className='block_r'>
             <View className='button yellow'>司机认证</View>
