@@ -30,15 +30,6 @@ export default function () {
   const data = useSelector(state => state.order)
   const dispatch = useDispatch()
 
-  useEffectOnce(() => {
-    Taro.getLocation({type: 'wgs84'}).then(res => dispatch(setData({myAddress: res})))
-    // Taro.startLocationUpdateBackground()
-    // Taro.onLocationChange(res=>{
-    //   console.log(res)
-    // })
-  })
-
-
   return (
     <NavBar title='物流' viewBackGround='#F3F5F4'>
       <View className='index'>

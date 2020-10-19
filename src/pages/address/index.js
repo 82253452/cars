@@ -13,11 +13,9 @@ import './index.less'
 export default function () {
   console.log('address')
 
-  const {myAddress} = useSelector(state => state.order)
-
+  const {currentLocation: myAddress = {}} = useSelector(state => state.user)
   const [data, setData] = useState({})
-
-  const [location={},getLocation] = useMapLocationSdk()
+  const [location = {}, getLocation] = useMapLocationSdk()
 
   const rules = {
     name: {
@@ -43,8 +41,8 @@ export default function () {
 
   function handleFinash() {
     if (!active) return;
-    if(!validated(rules,data))return
-    if(!validated({name: {require: true, message: '请输入公司名称'},},location))return
+    if (!validated(rules, data)) return
+    if (!validated({name: {require: true, message: '请输入公司名称'},}, location)) return
 
     Taro.eventCenter.trigger("setAddress", {location, user: data})
     Taro.navigateBack()
