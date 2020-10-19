@@ -11,6 +11,7 @@ export default {
     'pages/companyCertification/index',
     'pages/shop/index',
     'pages/driver/index',
+    'pages/driverIndex/index',
     'pages/transCompany/index',
   ],
   permission: {

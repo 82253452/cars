@@ -2,13 +2,18 @@ import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
 import SwiperScroll from "@/components/SwiperScroll";
 import fahuo from '@/img/fahuo.png'
+import dingwei from '@/img/dingwei.png'
 import gengduo from '@/img/gengduo.png'
+import jiantou from "@/img/jiantou.png";
 import lujing from '@/img/lujing.png'
 import shijian from '@/img/shijian.png'
 import shouhuo from '@/img/shouhuo.png'
+import sousuo2 from '@/img/sousuo2.png'
+import tujing1 from '@/img/tujing (1).png'
+import tujing2 from '@/img/tujing (2).png'
 import {useInfiniteQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
-import {Image, Text, View} from '@tarojs/components'
+import {Image, Input, Text, View} from '@tarojs/components'
 import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
 import React, {useRef} from 'react'
@@ -58,17 +63,29 @@ export default function () {
   return (
     <View className='index'>
       <View className='item_container'>
-        <SwiperScroll ref={swiperRef} labels={['全部', '抢单', '派单', '派送中', '待确认', '已完结']}>
+        <SwiperScroll ref={swiperRef} labels={['全部','个人单', '企业单']} header={<Search />}>
           <AllListCurrentView swiperRef={swiperRef} />
           <ListCurrentView swiperRef={swiperRef} />
-          <ReceiveView swiperRef={swiperRef} />
-          <InTransitView swiperRef={swiperRef} />
-          <ConfirmedView swiperRef={swiperRef} />
-          <FinalView swiperRef={swiperRef} />
+          <ListCurrentView2 swiperRef={swiperRef} />
         </SwiperScroll>
       </View>
     </View>
   )
+}
+
+function Search(){
+  return <View className='search'>
+    <View className='search_text'>
+      <Image src={dingwei} style={{width: '31rpx', height: '38rpx'}} />
+      <Text>上海</Text>
+      <Image src={jiantou} style={{width: '39rpx', height: '17rpx'}} />
+      <Text>杭州</Text>
+    </View>
+    <View className='search_button'>
+      <Input className='input' placeholderClass='placeholder' placeholder='请输入关键词' />
+      <Image src={sousuo2} style={{width: '34rpx', height: '34rpx'}} />
+    </View>
+  </View>
 }
 
 function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
@@ -100,35 +117,32 @@ function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
             <Image src={shijian} style={{width: `30rpx`, height: `30rpx`}} />
             <Text className='time'>{d.deliveryTimeStart}-{d.deliveryTimeStart}</Text>
           </View>
-          <View>
-            <Text style={{color: orderStatus[d.status].color}}>{orderStatus[d.status].text}</Text>
-            <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
+          <View className='distance'>
+            距您0.1km
           </View>
         </View>
-        <View className='content'>
-          <View className='block' style={{justifySelf: 'end'}}>
-            <Image src={fahuo} style={{width: `44rpx`, height: `44rpx`}} />
-            <View className='text'>
-              <View className='title'>{d.addressCityFrom}</View>
-              <View className='desc'>{d.addressDistrictFrom}</View>
-            </View>
+        <View className='center'>
+          <View className='center_l'>
+            <View className='icon'>个人</View>
+            <View className='title'>零部件200t，10m³共20托</View>
           </View>
-          <Image src={lujing} style={{width: `70rpx`, height: `8rpx`}} />
-          <View className='block'>
-            <Image src={shouhuo} style={{width: `44rpx`, height: `44rpx`}} />
-            <View className='text'>
-              <View className='title'>{d.addressCityTo}</View>
-              <View className='desc'>{d.addressDistrictTo}</View>
-            </View>
+          <View className='center_c'>
+              <Image src={tujing1} style={{width: '14rpx', height: '14rpx'}} />
+              <Text>北京市朝阳区百子湾</Text>
+          </View>
+          <View className='center_c'>
+            <Image src={tujing2} style={{width: '14rpx', height: '14rpx'}} />
+            <Text>河南省松林县张梓庄路</Text>
           </View>
         </View>
         <View className='bottom'>
-          <View>
-            <text className='desc'>费用</text>
+          <View className='descs'>
             <text className='number'>￥{d.amount || 0}</text>
+            <text className='car_type'>9米大货车</text>
+            <text className='car_type'>国六</text>
           </View>
-          <View className='title'>
-            <Text>{d.productName}</Text>
+          <View className='button_t'>
+            抢单
           </View>
         </View>
       </View>
@@ -152,43 +166,11 @@ function ListCurrentView ({swiperRef})  {
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}  swiperRef={swiperRef} />
 }
 
-function ReceiveView ({swiperRef}) {
-  console.log('ReceiveView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 1], (key, page = 1) => request(ORDER_STATUS_LIST, {
-    page,
-    status: 1
-  }), {
-    getFetchMore: lastGroup => lastGroup.nextPage
-  })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2}  swiperRef={swiperRef} />
-}
-function InTransitView ({swiperRef})  {
-  console.log('InTransitView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 2], (key, page = 1) => request(ORDER_STATUS_LIST, {
-    page,
-    status: 2
-  }), {
-    getFetchMore: lastGroup => lastGroup.nextPage
-  })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3}  swiperRef={swiperRef} />
-}
-function ConfirmedView ({swiperRef})  {
-  console.log('ConfirmedView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 3], (key, page = 1) => request(ORDER_STATUS_LIST, {
-    page,
-    status: 3
-  }), {
-    getFetchMore: lastGroup => lastGroup.nextPage
-  })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={4}  swiperRef={swiperRef} />
-}
 
-function FinalView ({swiperRef}) {
-  console.log('FinalView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_FINASH_LIST, (key, page = 1) => request(ORDER_FINASH_LIST, {page}), {
+function ListCurrentView2 ({swiperRef})  {
+  console.log('ListCurrentView')
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST, {page}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={5}  swiperRef={swiperRef} />
+  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}  swiperRef={swiperRef} />
 }
-
-

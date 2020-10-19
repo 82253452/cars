@@ -13,7 +13,8 @@ export default forwardRef(({
                              labels = [],
                              children,
                              onChange,
-                             swiperH
+                             swiperH,
+                             header
                            }, ref) => {
 
   console.log('swiperScroll')
@@ -32,7 +33,7 @@ export default forwardRef(({
 
   useUpdateEffect(() => {
     refreshDom()
-    onChange&&onChange(current)
+    onChange && onChange(current)
   }, [current])
 
   useImperativeHandle(ref, () => ({
@@ -54,6 +55,7 @@ export default forwardRef(({
 
   return <NavBar title='订单页' viewBackGround='#F3F5F4'>
     <View className='container'>
+      {header}
       <ScrollView scrollX className='scroll_view'>
         <View className='item_header'>
           {labels.map((l, i) => <View className='labels-container'>
