@@ -1,18 +1,15 @@
-import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
+import {ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
 import SwiperScroll from "@/components/SwiperScroll";
-import fahuo from '@/img/fahuo.png'
 import dingwei from '@/img/dingwei.png'
-import gengduo from '@/img/gengduo.png'
 import jiantou from "@/img/jiantou.png";
-import lujing from '@/img/lujing.png'
 import shijian from '@/img/shijian.png'
-import shouhuo from '@/img/shouhuo.png'
 import sousuo2 from '@/img/sousuo2.png'
 import tujing1 from '@/img/tujing (1).png'
 import tujing2 from '@/img/tujing (2).png'
 import {useInfiniteQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
+import {getDistance} from "@/utils/utils";
 import {Image, Input, Text, View} from '@tarojs/components'
 import {usePullDownRefresh, useReachBottom} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
@@ -54,6 +51,7 @@ const orderStatus = {
     color: '#333333'
   },
 }
+const discharge = ['国四', '国五', '国六']
 
 export default function () {
 
@@ -63,17 +61,17 @@ export default function () {
   return (
     <View className='index'>
       <View className='item_container'>
-        <SwiperScroll ref={swiperRef} labels={['全部','个人单', '企业单']} header={<Search />}>
+        <SwiperScroll title='首页' ref={swiperRef} labels={['全部', '个人单', '企业单']} header={<Search />}>
           <AllListCurrentView swiperRef={swiperRef} />
-          <ListCurrentView swiperRef={swiperRef} />
-          <ListCurrentView2 swiperRef={swiperRef} />
+          <PersonCurrentView swiperRef={swiperRef} />
+          <CompanyCurrentView swiperRef={swiperRef} />
         </SwiperScroll>
       </View>
     </View>
   )
 }
 
-function Search(){
+function Search() {
   return <View className='search'>
     <View className='search_text'>
       <Image src={dingwei} style={{width: '31rpx', height: '38rpx'}} />
@@ -88,8 +86,9 @@ function Search(){
   </View>
 }
 
-function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
+function ListView({data, canFetchMore, fetchMore, index, refetch, swiperRef}) {
   const {viewHeight} = useSelector(state => state.theme)
+  const {currentLocation={}} = useSelector(state => state.user)
   useReachBottom(async () => {
     index === swiperRef.current.current && canFetchMore && await fetchMore()
     setTimeout(refreshDom, 200)
@@ -99,6 +98,7 @@ function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
     setTimeout(refreshDom, 200)
     Taro.stopPullDownRefresh()
   })
+
   function refreshDom() {
     const query = Taro.createSelectorQuery()
     query.select(`.container .item_content_${swiperRef.current.current}`).boundingClientRect().exec(res => {
@@ -109,37 +109,44 @@ function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
   function toDetail(d) {
     Taro.navigateTo({url: '/pages/detail/index?id=' + d.id})
   }
+
   return <View>
     {data.map(r => r.list.map(d => <Panel padding={0}>
       <View className='item' onClick={() => toDetail(d)}>
         <View className='header'>
-          <View style={{display:'flex',alignItems:'center'}}>
+          <View style={{display: 'flex', alignItems: 'center'}}>
             <Image src={shijian} style={{width: `30rpx`, height: `30rpx`}} />
             <Text className='time'>{d.deliveryTimeStart}-{d.deliveryTimeStart}</Text>
           </View>
           <View className='distance'>
-            距您0.1km
+            距您{getDistance(currentLocation.latitude, currentLocation.longitude, d.latitudeFrom, d.longitudeFrom)}km
           </View>
         </View>
         <View className='center'>
           <View className='center_l'>
-            <View className='icon'>个人</View>
+            <View className='icon' style={{
+              background: {
+                0: 'linear-gradient(90deg, #FBD249 0%, #F5A623 100%)',
+                1: 'linear-gradient(90deg, #6DA9FF 0%, #277CF7 100%);'
+              }[d.orderType]
+            }}
+            >{{0: '个人', 1: '企业'}[d.orderType]}</View>
             <View className='title'>零部件200t，10m³共20托</View>
           </View>
           <View className='center_c'>
-              <Image src={tujing1} style={{width: '14rpx', height: '14rpx'}} />
-              <Text>北京市朝阳区百子湾</Text>
+            <Image src={tujing1} style={{width: '14rpx', height: '14rpx'}} />
+            <Text>{d.addressFromDetail}</Text>
           </View>
           <View className='center_c'>
             <Image src={tujing2} style={{width: '14rpx', height: '14rpx'}} />
-            <Text>河南省松林县张梓庄路</Text>
+            <Text>{d.addressToDetail}</Text>
           </View>
         </View>
         <View className='bottom'>
           <View className='descs'>
             <text className='number'>￥{d.amount || 0}</text>
-            <text className='car_type'>9米大货车</text>
-            <text className='car_type'>国六</text>
+            <text className='car_type'>{d.productName}</text>
+            <text className='car_type'>{discharge[d.discharge]}</text>
           </View>
           <View className='button_t'>
             抢单
@@ -150,27 +157,39 @@ function ListView({data, canFetchMore, fetchMore, index, refetch,swiperRef}) {
   </View>
 }
 
-function AllListCurrentView ({swiperRef}){
+function AllListCurrentView({swiperRef}) {
   console.log('AllListCurrentView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0}  swiperRef={swiperRef} />
+  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0}
+    swiperRef={swiperRef}
+  />
 }
 
-function ListCurrentView ({swiperRef})  {
+function PersonCurrentView({swiperRef}) {
   console.log('ListCurrentView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_INDEX_LIST, 0], (key, page = 1) => request(ORDER_INDEX_LIST, {
+    page,
+    type: 0
+  }), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}  swiperRef={swiperRef} />
+  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}
+    swiperRef={swiperRef}
+  />
 }
 
 
-function ListCurrentView2 ({swiperRef})  {
+function CompanyCurrentView({swiperRef}) {
   console.log('ListCurrentView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_INDEX_LIST, 1], (key, page = 1) => request(ORDER_INDEX_LIST, {
+    page,
+    type: 1
+  }), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
-  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}  swiperRef={swiperRef} />
+  return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2}
+    swiperRef={swiperRef}
+  />
 }

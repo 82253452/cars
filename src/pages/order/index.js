@@ -58,7 +58,7 @@ export default function () {
   return (
     <View className='index'>
       <View className='item_container'>
-        <SwiperScroll ref={swiperRef} labels={['全部', '抢单', '派单', '派送中', '待确认', '已完结']}>
+        <SwiperScroll title='订单页' ref={swiperRef} labels={['全部', '抢单', '派单', '派送中', '待确认', '已完结']}>
           <AllListCurrentView swiperRef={swiperRef} />
           <ListCurrentView swiperRef={swiperRef} />
           <ReceiveView swiperRef={swiperRef} />

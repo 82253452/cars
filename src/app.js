@@ -1,14 +1,11 @@
-// eslint-disable-next-line import/first
 import {BOTTOM_GAP} from "@/utils/Const";
 import Taro from "@tarojs/taro";
 import React from 'react'
 import {Provider} from 'react-redux'
-// eslint-disable-next-line import/first
 import useEffectOnce from "react-use/lib/useEffectOnce";
-// eslint-disable-next-line import/first
 import 'taro-ui/dist/style/index.scss'
 import {setBoundingClientRect, setViewHeight, setWindowHeight} from "./actions/theme";
-import {setUser} from "./actions/user";
+import {setUser,setLocation} from "./actions/user";
 import './app.less'
 import configStore from './store'
 import {getUserInfo} from "./utils/request"
@@ -28,7 +25,9 @@ export default function ({children}) {
     getUserInfo().then(res => {
       store.dispatch(setUser(res))
     })
-
+    Taro.getLocation({type: 'wgs84'}).then(res => {
+      store.dispatch(setLocation(res))
+    })
   })
 
   return (
