@@ -31,4 +31,6 @@ export const BANNER_LIST = "/api/banner/list"
 
 export const PRODUCT_LIST = "/api/product/list"
 
+export const PRODUCT_ORDER_SUBMIT = "/api/productOrder/submit"
+
 

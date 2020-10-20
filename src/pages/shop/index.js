@@ -1,4 +1,4 @@
-import {PRODUCT_LIST} from "@/api";
+import {PRODUCT_LIST, PRODUCT_ORDER_SUBMIT} from "@/api";
 import NavBar from "@/components/NavBar";
 import {useInfiniteQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
@@ -25,6 +25,15 @@ export default function () {
     Taro.stopPullDownRefresh()
   })
 
+  function handleButton(id) {
+    Taro.showModal({title: '确定兑换商品?'}).then(({confirm}) => {
+      confirm && request(PRODUCT_ORDER_SUBMIT, {id}).then(() => {
+        Taro.showToast({title: '兑换成功',icon: 'none'})
+      })
+    })
+
+  }
+
   return (
     <NavBar back home title='积分商城' viewBackGround='#F3F5F4'>
       <View className='index'>
@@ -37,7 +46,7 @@ export default function () {
                 <View className='price'>{d.price} 积分</View>
                 <View className='num'>剩余 {d.price}</View>
               </View>
-              <View className='button'>兑换</View>
+              <View className='button' onClick={() => handleButton(d.id)}>兑换</View>
             </View>
           </View>))}
         </View>
