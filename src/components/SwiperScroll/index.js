@@ -57,9 +57,9 @@ export default forwardRef(({
     return <NavBar title={title} viewBackGround='#F3F5F4'>
         <View className='container'>
             {header}
-            <ScrollView scrollX className='scroll_view'>
+            <ScrollView scrollX className='scroll_view' scrollIntoView={`item_${current}`} scrollWithAnimation>
                 <View className='item_header'>
-                    {labels.map((l, i) => <View className='labels-container'>
+                    {labels.map((l, i) => <View className='labels-container' id={`item_${i}`}>
                         <Text onClick={() => setCurrent(i)} className={`labels ${i === current && 'active'}`}>{l}</Text>
                         {i === current && <View className='line' />}
                     </View>)}
