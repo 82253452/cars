@@ -17,7 +17,7 @@ import tujing from '@/img/tujing.png'
 import {useQuery} from '@/react-query'
 import {request} from "@/utils/request";
 import {validated} from "@/utils/utils";
-import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
+import {CoverView, Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import Taro from "@tarojs/taro";
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
@@ -254,17 +254,17 @@ function SendProduct() {
     })
   }
 
-  return <View className='page_bottom'>
-    <View>
+  return <CoverView className='page_bottom'>
+    <CoverView>
       <Text className='desc'>预计</Text>
       <Text className='price'>￥{data.amount || 0}</Text>
-    </View>
-    <View className='right'>
+    </CoverView>
+    <CoverView className='right'>
       <Text className='desc decoration' onClick={handleShowPrice}>费用规则说明</Text>
-      <View className='send_button' onClick={confirm}>
+      <CoverView className='send_button' onClick={confirm}>
         <Text>立即发货</Text>
-      </View>
-    </View>
-  </View>
+      </CoverView>
+    </CoverView>
+  </CoverView>
 }
 
