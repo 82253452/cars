@@ -55,7 +55,7 @@ export function useMapDirectionSdkEffect({from, to, waypoints}, effect, deps) {
     });
   })
 
-  useUpdateEffect(() => {
+  useEffect(() => {
     async function direction() {
       return new Promise((resolve, reject) => {
         qqMapSdkRef.current.direction({

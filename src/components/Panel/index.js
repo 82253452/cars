@@ -28,6 +28,23 @@ export default forwardRef (({children, style, borderRadius = 15, marginTop = 20,
         setAniActions(animation.export())
       }
       setDroggle(!droggle)
+    },
+    closePanel:()=>{
+      if(droggle){
+        animation.scale(0.01,0.01).step()
+        animation.opacity(0).step({duration:10})
+        animation.width('150rpx').height('40rpx').scale(1,1).opacity(1).step({duration:0})
+        setAniActions(animation.export())
+        setDroggle(!droggle)
+      }
+    },
+    openPanel:()=>{
+      if(!droggle){
+        animation.width(`calc(100% - ${space * 2}rpx)`).height('100%').step({duration:0})
+        animation.width(`calc(100% - ${space * 2}rpx)`).height('100%').step({duration:1000})
+        setAniActions(animation.export())
+        setDroggle(!droggle)
+      }
     }
   }))
 

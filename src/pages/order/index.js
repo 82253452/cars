@@ -146,7 +146,7 @@ function AllListCurrentView ({swiperRef}){
 
 function ListCurrentView ({swiperRef})  {
   console.log('ListCurrentView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_INDEX_LIST, (key, page = 1) => request(ORDER_INDEX_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`${ORDER_INDEX_LIST}_0`, (key, page = 1) => request(ORDER_INDEX_LIST, {page,type:0}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}  swiperRef={swiperRef} />
@@ -154,7 +154,7 @@ function ListCurrentView ({swiperRef})  {
 
 function ReceiveView ({swiperRef}) {
   console.log('ReceiveView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 1], (key, page = 1) => request(ORDER_STATUS_LIST, {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`${ORDER_INDEX_LIST}_1`, (key, page = 1) => request(ORDER_STATUS_LIST, {
     page,
     status: 1
   }), {
@@ -164,7 +164,7 @@ function ReceiveView ({swiperRef}) {
 }
 function InTransitView ({swiperRef})  {
   console.log('InTransitView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 2], (key, page = 1) => request(ORDER_STATUS_LIST, {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`${ORDER_INDEX_LIST}_2`, (key, page = 1) => request(ORDER_STATUS_LIST, {
     page,
     status: 2
   }), {
@@ -174,7 +174,7 @@ function InTransitView ({swiperRef})  {
 }
 function ConfirmedView ({swiperRef})  {
   console.log('ConfirmedView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([ORDER_STATUS_LIST, 3], (key, page = 1) => request(ORDER_STATUS_LIST, {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(`${ORDER_INDEX_LIST}_3`, (key, page = 1) => request(ORDER_STATUS_LIST, {
     page,
     status: 3
   }), {

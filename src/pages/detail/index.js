@@ -1,3 +1,4 @@
+import {setLocation} from "@/actions/user";
 import {
   ORDER_CLOSE,
   ORDER_DETAIL,
@@ -5,7 +6,7 @@ import {
   ORDER_INDEX_LIST,
   ORDER_RECEIVE_ORDER,
   ORDER_STATUS_LIST,
-  ORDER_STOP
+  ORDER_STOP, ORDER_UPLOADADDRESS
 } from "@/api";
 import {useMapDirectionSdkEffect} from "@/common/useMapLocationSdk";
 import NavBar from "@/components/NavBar";
@@ -18,8 +19,8 @@ import {request} from "@/utils/request";
 import {Image, Map, Text, View} from '@tarojs/components'
 import {useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React, {useRef, useState} from 'react'
-import {useSelector} from "react-redux";
+import React, {useEffect, useMemo, useRef, useState} from 'react'
+import {useSelector, useDispatch} from "react-redux";
 
 import './index.less'
 
@@ -33,6 +34,8 @@ export default function () {
   const {params} = useRouter()
   const paramsId = parseInt(params.id)
   const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+
   const panelRef = useRef()
   const {
     data = {
@@ -44,6 +47,26 @@ export default function () {
   } = useQuery([ORDER_DETAIL, paramsId], () => request(ORDER_DETAIL, {id: paramsId}))
 
   const [polyline, setPolyline] = useState([])
+  //是否是本人订单
+  const isMyOrder = useMemo(() => user.id === data.userId, [data.userId, user.id])
+  const isMyReceiveOrder = useMemo(() => user.id === data.receiveUserId, [data.receiveUserId, user.id])
+
+  useEffect(() => {
+    if (isMyReceiveOrder) {
+      if (data.status === 2) {
+        setTimeout(() => panelRef.current.closePanel(), 500)
+        Taro.startLocationUpdateBackground()
+        Taro.onLocationChange(res => {
+          request(ORDER_UPLOADADDRESS, {id: data.id, address: `${res.latitude}-${res.longitude}`})
+          dispatch(setLocation(res))
+        })
+      } else {
+        panelRef.current.openPanel()
+        Taro.offLocationChange()
+        Taro.stopLocationUpdate()
+      }
+    }
+  }, [data.id, data.status, dispatch, isMyReceiveOrder])
 
   const [nextOrder] = useMutation(
     () => request(ORDER_RECEIVE_ORDER, {id: paramsId}),
@@ -95,7 +118,7 @@ export default function () {
     if (data.status >= 4) {
       return
     }
-    if (user.id === data.userId) {
+    if (isMyOrder) {
       if (data.status === 0) {
         Taro.showModal({title: '确定关闭订单?'}).then(({confirm}) => {
           confirm && closeOrder()
@@ -132,8 +155,8 @@ export default function () {
   }, [data.latitudeFrom, data.longitudeFrom, data.latitudeTo, data.longitudeTo])
 
   function OrderStatusButtons() {
-    if (user.id === data.userId) {
-      return data.status === 0 ? <View className='buttons'>
+    if (isMyOrder) {
+      return data.status === 0 || data.status === 3 ? <View className='buttons'>
         <View className='button red' onClick={handelConfirm}>{myOrderStatus[data.status]}</View>
       </View> : <View className='buttons'>
         <View className='button'>申诉</View>
@@ -149,6 +172,12 @@ export default function () {
   }
 
   const marks = [{
+    latitude: user.currentLocation.latitude,
+    longitude: user.currentLocation.longitude,
+    label: {
+      content: '当前位置'
+    }
+  }, {
     latitude: data.latitudeFrom,
     longitude: data.longitudeFrom,
     label: {
@@ -203,10 +232,14 @@ export default function () {
 }
 
 function Close({panelRef}) {
-  function drogglePanel(){
+  function drogglePanel() {
     panelRef.current.drogglePanel()
   }
-  return <View style={{width: '100%', display: 'flex', justifyContent: "center",alignItems:'center', padding: '10px 0 10rpx 0'}} onClick={drogglePanel}>
+
+  return <View
+    style={{width: '100%', display: 'flex', justifyContent: "center", alignItems: 'center', padding: '10px 0 10rpx 0'}}
+    onClick={drogglePanel}
+  >
     <Image src={zhedie} style={{width: '96rpx  ', height: '8rpx'}} />
   </View>
 }

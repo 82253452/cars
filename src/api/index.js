@@ -21,6 +21,7 @@ export const ORDER_CLOSE = "/api/order/close"
 export const ORDER_STOP = "/api/order/stop"
 export const ORDER_SUBMIT = "/api/order/submit POST"
 export const ORDER_RECEIVE_ORDER = "/api/order/receiveOrder"
+export const ORDER_UPLOADADDRESS = "/api/order/uploadAddress"
 
 export const TRANS_COMPANY_PAGE = "/trans/user/list"
 export const TRANS_COMPANY_ATTACH = "/trans/attachCompany"
@@ -32,5 +33,6 @@ export const BANNER_LIST = "/api/banner/list"
 export const PRODUCT_LIST = "/api/product/list"
 
 export const PRODUCT_ORDER_SUBMIT = "/api/productOrder/submit"
+
 
 

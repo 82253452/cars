@@ -254,17 +254,17 @@ function SendProduct() {
     })
   }
 
-  return <CoverView className='page_bottom'>
-    <CoverView>
-      <Text className='desc'>预计</Text>
-      <Text className='price'>￥{data.amount || 0}</Text>
-    </CoverView>
-    <CoverView className='right'>
-      <Text className='desc decoration' onClick={handleShowPrice}>费用规则说明</Text>
-      <CoverView className='send_button' onClick={confirm}>
-        <Text>立即发货</Text>
-      </CoverView>
-    </CoverView>
-  </CoverView>
+  return <View className='page_bottom'>
+    <View className='left'>
+      <View className='desc'>预计</View>
+      <CoverView className='price'>￥{data.amount || 0}</CoverView>
+    </View>
+    <View className='right'>
+      <View className='desc decoration' onClick={handleShowPrice}>费用规则说明</View>
+      <View className='send_button' onClick={confirm}>
+        <View className='text'>立即发货</View>
+      </View>
+    </View>
+  </View>
 }
 
