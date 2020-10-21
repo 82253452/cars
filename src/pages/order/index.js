@@ -151,7 +151,7 @@ function PanelBlock({d, id}) {
       </View>
     </Panel> : <Skeleton row={1} rowProps={{
       width: '100%%',
-      height: '160px'
+      height: '182px'
     }}
     ></Skeleton>}
   </View>
