@@ -1,10 +1,10 @@
 import NavBar from '@/components/NavBar'
 import Skeleton from "@/components/Skeleton";
 import {ScrollView, Swiper, SwiperItem, Text, View} from "@tarojs/components";
+import {useReady} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React, {forwardRef, useImperativeHandle, useState} from "react";
+import React, {forwardRef, useImperativeHandle, useMemo, useState} from "react";
 import {useSelector} from "react-redux";
-import useEffectOnce from "react-use/lib/useEffectOnce";
 import useUpdateEffect from "react-use/lib/useUpdateEffect";
 import './index.less'
 
@@ -20,31 +20,37 @@ export default forwardRef(({
                            }, ref) => {
 
   console.log('swiperScroll')
-  const {viewHeight, boundingClientRect} = useSelector(state => state.theme)
+  const {viewHeight} = useSelector(state => state.theme)
   const [current, setCurrent] = useState(0)
   const [swiperHeight, setSwiperHeight] = useState(viewHeight)
-  useEffectOnce(() => {
-    setTimeout(() => {
-      refreshDom()
-    }, 300)
-  })
+
 
   useUpdateEffect(() => {
     setSwiperHeight(swiperH)
   }, [swiperH])
 
   useUpdateEffect(() => {
-    setTimeout(() => {
-      refreshDom()
-    }, 300)
     Taro.pageScrollTo({scrollTop:0})
     onChange && onChange(current)
   }, [current])
 
   useImperativeHandle(ref, () => ({
     current,
-    setSwiperHeight
+    setSwiperHeight,
+    refreshDom
   }))
+
+  const swiperHeightMemo = useMemo(()=>swiperHeight,[swiperHeight])
+
+  useReady(()=>{
+    labels.forEach((l,i)=>{
+      Taro.createIntersectionObserver().relativeToViewport().observe(`.item_content_${i}`, (res) => {
+        if(i===res.id*1 && res.intersectionRatio>0){
+          setTimeout(()=>setSwiperHeight(res.boundingClientRect.height> viewHeight ? res.boundingClientRect.height : viewHeight),500)
+        }
+      })
+    })
+  })
 
 
   function refreshDom() {
@@ -73,11 +79,12 @@ export default forwardRef(({
         className={`item_swiper ${className}`}
         onChange={selectChange}
         current={current}
-        style={{height: `${swiperHeight}px`}}
+        style={{height: `${swiperHeightMemo}px`}}
       >
         {labels.map((l, i) => <SwiperItem className={`swiper_item ${itemClassNam}`}>
-          <View className={`item_content_${i}`}>
-            {current === i ? children[i] : <Gujia swiperHeight={swiperHeight} />}
+          <View className={`item_content_${i}`} style={{minHeight:`${swiperH}rpx`}}  id={i} >
+            {/*{current === i ? children[i] : <Gujia swiperHeight={swiperHeight} />}*/}
+            {children[i]}
           </View>
         </SwiperItem>)}
       </Swiper>
@@ -85,13 +92,3 @@ export default forwardRef(({
   </NavBar>
 })
 
-function Gujia({swiperHeight}) {
-  const rowArray = Array.apply(null, Array(4)).map((_, index) => index)
-  const rowProps = rowArray.map(()=>({
-    width: '100%%',
-    height: '160px'
-  }))
-  return <View style={{height: `${swiperHeight}px`}}>
-    <Skeleton row={4} rowProps={rowProps} />
-  </View>
-}
