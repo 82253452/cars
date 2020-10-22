@@ -13,7 +13,7 @@ export const USER_INFO = "/api/mini/user"
 export const CAR_LIST = "/api/car/list"
 
 export const ORDER_LIST = "/api/order/list"
-export const ORDER_INDEX_LIST = "/api/order/index/list"
+export const ORDER_INDEX_LIST = "/api/order/index/list POST"
 export const ORDER_STATUS_LIST = "/api/order/status/list"
 export const ORDER_FINASH_LIST = "/api/order/finash/list"
 export const ORDER_DETAIL = "/api/order/detail"
