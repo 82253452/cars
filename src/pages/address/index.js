@@ -38,6 +38,15 @@ export default function () {
     }
   }, [])
 
+  const markers = [location?{
+    ...location, label: {
+      content: '选择地址'
+    }
+  }:{
+    ...myAddress, label: {
+      content: '我的位置'
+    }
+  }]
 
   function handleFinash() {
     if (!active) return;
@@ -52,13 +61,9 @@ export default function () {
     <NavBar title='地址选择' viewBackGround='#F3F5F4' back home>
       <View className='index'>
         <Map className='map' scale={12}
-          latitude={myAddress.latitude - 0.05}
-          longitude={myAddress.longitude}
-          markers={[{
-               ...myAddress, label: {
-                 content: '我的位置'
-               }
-             }]}
+          latitude={(location?location.latitude:myAddress.latitude) - 0.05}
+          longitude={location?location.longitude:myAddress.longitude}
+          markers={markers}
         />
         <View className='form'>
           {location ? <Panel>
