@@ -15,7 +15,7 @@ export default function () {
 
   const {currentLocation: myAddress = {}} = useSelector(state => state.user)
   const [data, setData] = useState({})
-  const [location = {}, getLocation] = useMapLocationSdk()
+  const [location, getLocation] = useMapLocationSdk()
 
   const rules = {
     name: {

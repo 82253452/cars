@@ -38,7 +38,7 @@ export default function () {
           <Text className='nick_name'>{user.nickname || '登录'}</Text>
           <View className='integral'>
             <Image src={xinyu} style={{width: '26rpx', height: '34rpx'}} />
-            <Text>信誉积分：100</Text>
+            <Text>信誉:{user.creditScore} 积分:{user.integral}</Text>
           </View>
         </View>
       </View>
@@ -67,14 +67,17 @@ function Header() {
   </Panel>
 }
 function Items() {
+  const user = useSelector(state => state.user)
+  const isCompanyAuth = user.company && user.company.status===2
+  const isDriverAuth = user.driver && user.driver.status===2
   function toCompany() {
-    Taro.navigateTo({url: '/pages/companyCertification/index'})
+    isCompanyAuth || Taro.navigateTo({url: '/pages/companyCertification/index'})
   }
   function makeCall() {
     Taro.makePhoneCall({phoneNumber: '15901320019'})
   }
   function toDriver(){
-    Taro.navigateTo({url: '/pages/driver/index'})
+    isDriverAuth || Taro.navigateTo({url: '/pages/driver/index'})
   }
   return <Panel space={0} borderRadius={0}>
     <View className='items_list'>
@@ -86,14 +89,14 @@ function Items() {
         <View className='block border_bottom' onClick={toCompany}>
           <Image src={qiyerenzheng} style={{width: '45rpx', height: '45rpx'}} />
           <View className='block_r'>
-            <View className='button'>企业认证</View>
+            <View className='button'>{isCompanyAuth?'已认证':'企业认证'}</View>
             <View className='desc'>一点多票每票减40</View>
           </View>
         </View>
         <View className='block border_bottom' onClick={toDriver}>
           <Image src={sijirenzheng} style={{width: '45rpx', height: '45rpx'}} />
           <View className='block_r'>
-            <View className='button yellow'>司机认证</View>
+            <View className='button yellow'>{isDriverAuth?'已认证':'司机认证'}</View>
             <View className='desc'>实时货物行程信息</View>
           </View>
         </View>
@@ -133,9 +136,9 @@ function Items() {
           </View>
         </View>
         <View className='block center'>
-          <View className='block_button'>
+          <Button  openType='share' className='content block_button'>
             邀请有奖
-          </View>
+          </Button>
         </View>
       </View>
     </View>
