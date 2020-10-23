@@ -204,7 +204,7 @@ export default function () {
       />
       <View className='info'>
         <View className='info_list'>
-          <Panel paddingLR={20} paddingUD={0} ref={panelRef}>
+          <Panel paddingLR={20} paddingUD={0} ref={panelRef} animation='zoomInUp'>
             <Close panelRef={panelRef} />
             <PanelItemText title='姓名' value={data.userName} />
             <PanelItemText title='手机号' value={data.phone} />
