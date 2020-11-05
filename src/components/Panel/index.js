@@ -1,44 +1,41 @@
 import {View} from "@tarojs/components";
 import React, {forwardRef, useImperativeHandle, useState} from "react";
+import useUpdateEffect from "react-use/lib/useUpdateEffect";
 import './index.less'
 
-export default forwardRef (({children, style, borderRadius = 15, marginTop = 20, space = 30, paddingUD = 30, paddingLR = 0, padding,animation},ref)=> {
+export default forwardRef(({children, style, space = 30, animation, animationShow = 'zoomInUp', animationShowHidden = 'zoomOutDown', show = true,callBack}, ref) => {
+    const [droggle, setDroggle] = useState(show)
+    const [animationName, setAnimationName] = useState(!show ? 'hidden' : animation)
 
-  const [droggle,setDroggle] = useState(true)
-  const [animationName,setAnimationName] = useState(animation)
-
-  useImperativeHandle(ref, () => ({
-    drogglePanel:()=>{
-      if(droggle){
-        setAnimationName('zoomOutDown')
-      }else{
-        setAnimationName('zoomInUp')
+    useUpdateEffect(() => {
+      if (animation) {
+        droggle ? setAnimationName(animationShow) : setAnimationName(animationShowHidden)
       }
-      setDroggle(!droggle)
-    },
-    closePanel:()=>{
-      if(droggle){
-        setAnimationName('zoomOutDown')
+    }, [droggle])
+
+    useImperativeHandle(ref, () => ({
+      droggle:droggle,
+      drogglePanel: () => {
+        callBack&&callBack(!droggle)
         setDroggle(!droggle)
+      },
+      closePanel: () => {
+        callBack&&callBack(false)
+        setDroggle(false)
+      },
+      openPanel: () => {
+        callBack&&callBack(true)
+        setDroggle(true)
       }
-    },
-    openPanel:()=>{
-      if(!droggle){
-        setAnimationName('zoomInUp')
-        setDroggle(!droggle)
-      }
-    }
-  }))
+    }))
 
-  return <View className={`panel-container ${animationName}`} style={{
-    marginTop: `${marginTop}rpx`,
-    padding: `${padding !== undefined ? padding : paddingUD}rpx ${padding !== undefined ? padding : paddingLR}rpx`,
-    width: `calc(100% - ${space * 2}rpx)`,
-    borderRadius: `${borderRadius}rpx`,
-    ...style
-  }}
-  >
-    {children}
-  </View>
-})
+    return <View className={`panel-container ${animationName}`} style={{
+      width: `calc(100% - ${space * 2}rpx)`,
+      ...style
+    }}
+    >
+      {children}
+    </View>
+  }
+)
 

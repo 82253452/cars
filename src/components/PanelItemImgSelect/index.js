@@ -12,7 +12,7 @@ export default function ({
 
 
   return <View className='panel-item-input-container'
-    style={{...style}}
+    style={style}
   >
     {title ? <View className='title'>
         <Text>{title}</Text>

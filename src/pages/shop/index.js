@@ -29,12 +29,12 @@ export default function () {
   })
 
   function handleButton(id) {
-    Taro.showModal({title: '确定兑换商品?'}).then(({confirm}) => {
-      confirm && request(PRODUCT_ORDER_SUBMIT, {id}).then(() => {
-        Taro.showToast({title: '兑换成功', icon: 'none'})
-      })
-    })
-
+    Taro.navigateTo({url: '/pages/shopDetail/index?id=' + id})
+    // Taro.showModal({title: '确定兑换商品?'}).then(({confirm}) => {
+    //   confirm && request(PRODUCT_ORDER_SUBMIT, {id}).then(() => {
+    //     Taro.showToast({title: '兑换成功', icon: 'none'})
+    //   })
+    // })
   }
 
   return (
@@ -47,7 +47,7 @@ export default function () {
             <View className='info'>
               <View className='info_s'>
                 <View className='price'>{d.price} 积分</View>
-                <View className='num'>剩余 {d.price}</View>
+                <View className='num'>剩余 {d.num}</View>
               </View>
               <View className='button' onClick={() => handleButton(d.id)}>兑换</View>
             </View>

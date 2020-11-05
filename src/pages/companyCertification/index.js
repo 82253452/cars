@@ -58,7 +58,7 @@ export default function () {
 
   return <NavBar title='企业认证' back home viewBackGround='#fff'>
     <View className='container'>
-      <Panel padding={0} space={0} borderRadius={0}>
+      <Panel style={{borderRadius:0,width:'100%'}}>
         <PanelItemInputNew title='公司名称' value={data.name} placeholder='请输入公司名称'
           onChange={e => setData({...data, name: e})}
         />
@@ -82,7 +82,7 @@ export default function () {
         />
       </Panel>
 
-      <Panel padding={0} space={0} borderRadius={0}>
+      <Panel style={{borderRadius:0,width:'100%'}}>
         <PanelItemImage title='营业执照' desc='正面照清晰无遮挡' value={data.businessLicense}
           onChange={e => setData({...data, businessLicense: e})}
         />

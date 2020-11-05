@@ -1,5 +1,4 @@
 import NavBar from '@/components/NavBar'
-import Skeleton from "@/components/Skeleton";
 import {ScrollView, Swiper, SwiperItem, Text, View} from "@tarojs/components";
 import {useReady} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
@@ -16,7 +15,8 @@ export default forwardRef(({
                              onChange,
                              swiperH,
                              header,
-                             title
+                             title,
+                             back, home
                            }, ref) => {
 
   console.log('swiperScroll')
@@ -30,7 +30,7 @@ export default forwardRef(({
   }, [swiperH])
 
   useUpdateEffect(() => {
-    Taro.pageScrollTo({scrollTop:0})
+    Taro.pageScrollTo({scrollTop: 0})
     onChange && onChange(current)
   }, [current])
 
@@ -40,13 +40,13 @@ export default forwardRef(({
     refreshDom
   }))
 
-  const swiperHeightMemo = useMemo(()=>swiperHeight,[swiperHeight])
+  const swiperHeightMemo = useMemo(() => swiperHeight, [swiperHeight])
 
-  useReady(()=>{
-    labels.forEach((l,i)=>{
+  useReady(() => {
+    labels.forEach((l, i) => {
       Taro.createIntersectionObserver().relativeToViewport().observe(`.item_content_${i}`, (res) => {
-        if(i===res.id*1 && res.intersectionRatio>0){
-          setTimeout(()=>setSwiperHeight(res.boundingClientRect.height> viewHeight ? res.boundingClientRect.height : viewHeight),500)
+        if (i === res.id * 1 && res.intersectionRatio > 0) {
+          setTimeout(() => setSwiperHeight(res.boundingClientRect.height > viewHeight ? res.boundingClientRect.height : viewHeight), 500)
         }
       })
     })
@@ -64,7 +64,7 @@ export default forwardRef(({
     setCurrent(detail.current)
   }
 
-  return <NavBar title={title} viewBackGround='#F3F5F4'>
+  return <NavBar back={back} home={home} title={title} viewBackGround='#F3F5F4'>
     <View className='container'>
       {header}
       <ScrollView scrollX className='scroll_view' scrollIntoView={`item_${current}`} scrollWithAnimation>
@@ -82,7 +82,7 @@ export default forwardRef(({
         style={{height: `${swiperHeightMemo}px`}}
       >
         {labels.map((l, i) => <SwiperItem className={`swiper_item ${itemClassNam}`}>
-          <View className={`item_content_${i}`} style={{minHeight:`${swiperH}rpx`}}  id={i} >
+          <View className={`item_content_${i}`} style={{minHeight: `${swiperH}rpx`}} id={i}>
             {/*{current === i ? children[i] : <Gujia swiperHeight={swiperHeight} />}*/}
             {children[i]}
           </View>

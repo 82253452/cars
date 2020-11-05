@@ -1,7 +1,7 @@
 import {ORDER_FINASH_LIST, ORDER_INDEX_LIST, ORDER_STATUS_LIST} from "@/api";
 import Panel from "@/components/Panel";
-import Skeleton from "@/components/Skeleton";
 import SwiperScroll from "@/components/SwiperScroll";
+import Skeleton from "@/components/Skeleton";
 import fahuo from '@/img/fahuo.png'
 import gengduo from '@/img/gengduo.png'
 import lujing from '@/img/lujing.png'
@@ -91,25 +91,25 @@ function ListView({data, canFetchMore, fetchMore, index, refetch, swiperRef}) {
 function PanelBlock({d, id}) {
   const [show, setShow] = useState(false)
 
-  const isShow = useMemo(()=>show,[show])
+  const isShow = useMemo(() => show, [show])
 
   function toDetail(e) {
     Taro.navigateTo({url: '/pages/detail/index?id=' + e.id})
   }
 
   useEffectOnce(() => {
-    setTimeout(()=>{
+    setTimeout(() => {
       Taro.createIntersectionObserver().relativeToViewport().observe(`.item_observer_${id}`, (res) => {
         if (res.intersectionRatio > 0) {
           setShow(true)
         } else if (res.intersectionRatio === 0) {
-         setShow(false)
+          setShow(false)
         }
       })
-    },300)
+    }, 300)
   })
 
-  return <View className={`item_observer_${id}`}  id={id}>
+  return <View className={`item_observer_${id}`} id={id}>
     {isShow ? <Panel padding={0}>
       <View className='item' onClick={() => toDetail(d)}>
         <View className='header'>
@@ -117,7 +117,7 @@ function PanelBlock({d, id}) {
             <Image src={shijian} style={{width: `30rpx`, height: `30rpx`}} />
             <View><Text className='time'>{d.deliveryTimeStart}-{d.deliveryTimeStart}</Text></View>
           </View>
-          <View style={{display:'flex',alignItems:'center'}}>
+          <View style={{display: 'flex', alignItems: 'center'}}>
             <View><Text style={{color: orderStatus[d.status].color}}>{orderStatus[d.status].text}</Text></View>
             <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
           </View>
@@ -140,20 +140,20 @@ function PanelBlock({d, id}) {
           </View>
         </View>
         <View className='bottom'>
-          <View  style={{display:'flex',alignItems:'center'}}>
-            <View><text className='desc'>费用</text></View>
-            <View><text className='number'>￥{d.amount || 0}</text></View>
+          <View style={{display: 'flex', alignItems: 'center'}}>
+            <View>
+              <text className='desc'>费用</text>
+            </View>
+            <View>
+              <text className='number'>￥{d.amount || 0}</text>
+            </View>
           </View>
           <View className='title'>
             <View><Text>{d.productName}</Text></View>
           </View>
         </View>
       </View>
-    </Panel> : <Skeleton row={1} rowProps={{
-      width: '100%%',
-      height: '182px'
-    }}
-    ></Skeleton>}
+    </Panel> : <Skeleton height={182} />}
   </View>
 }
 

@@ -66,7 +66,7 @@ export default function () {
           markers={markers}
         />
         <View className='form'>
-          {location ? <Panel>
+          {location ? <Panel style={{padding:'30rpx 0'}}>
             <View className='address_view'>
               <View className='address'>
                 <View className='title'>
@@ -81,7 +81,7 @@ export default function () {
               </View>
             </View>
           </Panel> : <View />}
-          <Panel>
+          <Panel style={{padding:'30rpx 0'}}>
             {location ? <View /> : <View className='select_address' onClick={getLocation}>
               <Text>选择地址</Text>
               <Image src={gengduoju} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />

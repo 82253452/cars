@@ -5,7 +5,7 @@ import dizhibo from '@/img/dizhibo.png'
 import jiage from '@/img/jiage.png'
 import jianyi from '@/img/jianyi.png'
 import kefu from '@/img/kefu.png'
-import avatar from '@/img/logo.png'
+import avatar from '@/img/agerenzhongxin.png'
 import qianbao from '@/img/qianbao.png'
 import qiyerenzheng from '@/img/qiyerenzheng.png'
 import sijirenzheng from '@/img/sijirenzheng.png'
@@ -49,7 +49,7 @@ export default function () {
 }
 
 function Header() {
-  return <Panel marginTop={-45}>
+  return <Panel style={{marginTop:'-45rpx',padding:'40rpx 0'}}>
     <View className='header_nav'>
       <View className='item'>
         <Image src={dingdan2} style={{width: '76rpx', height: '82rpx'}} />
@@ -79,7 +79,7 @@ function Items() {
   function toDriver(){
     isDriverAuth || Taro.navigateTo({url: '/pages/driver/index'})
   }
-  return <Panel space={0} borderRadius={0}>
+  return <Panel style={{borderRadius:'0',padding:'30rpx 0 0 0',width:'100%'}}>
     <View className='items_list'>
       <View className='header'>
         <View className='line' />

@@ -1,17 +1,20 @@
 .panel-item-multiple-select-container {
   width: 100%;
-  padding: 0 20px;
+  padding: 30px 20px;
   box-sizing: border-box;
-  margin-top: 30px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   .title {
     font-size: 28px;
     font-weight: bold;
     color: #333333;
   }
-
+  .buttons{
+    display: flex;
+    align-items: center;
+  }
   .button {
     width: 140px;
     height: 60px;
@@ -39,5 +42,9 @@
       color: #CE0801;
     }
   }
+}
+
+.panel-item-multiple-select-container:not(:last-child) {
+  border-bottom: 2px solid #F0F4F7;
 }
 

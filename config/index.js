@@ -33,6 +33,12 @@ const config = {
     '@/img': path.resolve(__dirname, '..', 'src/img'),
     '@/api': path.resolve(__dirname, '..', 'src/api'),
   },
+  terser: {
+    enable: true,
+  },
+  csso: {
+    enable: true,
+  },
   mini: {
     postcss: {
       pxtransform: {

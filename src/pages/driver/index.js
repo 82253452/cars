@@ -22,8 +22,8 @@ export default function () {
   }
 
   return <NavBar title='司机认证' back home viewBackGround='#fff'>
-      <View className='container'>
-        <Panel padding={0} space={0} borderRadius={0} style={{paddingBottom:'30rpx'}}>
+      <View className='container_driver'>
+        <Panel style={{borderRadius:0,width:'100%',paddingBottom:'30rpx'}}>
           <PanelItemInputNew title='姓名' value={data.name} placeholder='请输入姓名' onChange={e=>setData({...data,name:e})} />
           <PanelItemInputNew title='手机号' type='number' value={data.phone} placeholder='请输入手机号' onChange={e=>setData({...data,phone:e})} />
           <PanelItemInputNew title='车牌号' value={data.carNumber} placeholder='请输入车牌号' onChange={e=>setData({...data,carNumber:e})} />
@@ -35,7 +35,7 @@ export default function () {
           />
         </Panel>
 
-        <Panel padding={0} space={0} borderRadius={0}>
+        <Panel style={{borderRadius:0,width:'100%'}}>
           <PanelItemImage title='本人照片' desc='正面照清晰无遮挡' value={data.userImg} onChange={e=>setData({...data,userImg:e})} />
           <PanelItemImage title='汽车照片' desc='正面照清晰无遮挡' value={data.carImg} onChange={e=>setData({...data,carImg:e})} />
           <PanelItemImage title='驾驶本' desc='正面照清晰无遮挡' value={data.driversLicense} onChange={e=>setData({...data,driversLicense:e})} />

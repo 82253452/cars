@@ -37,7 +37,7 @@ export default function () {
         <Notice />
         <Address />
         <Content />
-        <Panel>
+        <Panel style={{padding: '30rpx 20rpx 30rpx 0'}}>
           <PanelItemInput title='备注' placeHolder='选填，请输入备注' value={data.remark}
             onChange={v => dispatch(setData({remark: v}))}
           />
@@ -126,7 +126,7 @@ function Address() {
     Taro.navigateTo({url: '/pages/address/index'})
   }
 
-  return <Panel>
+  return <Panel style={{padding: '30rpx 20rpx 20rpx 0'}}>
     <PanelItemImgSelect headerImg={fahuo} headerImgWidth={44} headerImgHeight={44} tailImg={dizhipu} tailImgWidth={44}
       tailImgHeight={40} placeHolder='请填写发货地址' value={data.addressFrom?.location?.name}
       range={addressFrom.length ? addressFrom.map(a => a.location.name) : ['无']}
@@ -167,7 +167,7 @@ function Content() {
   const data = useSelector(state => state.order)
   const dispatch = useDispatch()
 
-  return <Panel>
+  return <Panel  style={{padding: '30rpx 20rpx 0 0'}}>
     <PanelItemSelect title='车型' placeHolder='请选择车型' range={cars.list.map(c => c.title)}
       value={cars.list.find(c => c.id === data.carTypeId)?.title}
       onChange={v => {
@@ -217,7 +217,8 @@ function SendProduct() {
       message: '请选择车型'
     }
   }
-  useMapDirectionSdkEffect({from: {
+  useMapDirectionSdkEffect({
+    from: {
       latitude: data.addressFrom?.location?.latitude,
       longitude: data.addressFrom?.location?.longitude
     },
@@ -225,8 +226,8 @@ function SendProduct() {
       latitude: data.addressTo?.location?.latitude,
       longitude: data.addressTo?.location?.longitude
     },
-    waypoints:data.addressRoute.map(r=>r.latitude&&r.longitude?`${r.latitude?.toString()},${r.longitude?.toString()}`:'').join(';')
-  },(d)=>{
+    waypoints: data.addressRoute.map(r => r.latitude && r.longitude ? `${r.latitude?.toString()},${r.longitude?.toString()}` : '').join(';')
+  }, (d) => {
     if (d[0].distance / 1000 <= 15) {
       dispatch(setData({amount: 380}))
     } else if (d[0].distance / 1000 <= 50) {
@@ -234,7 +235,7 @@ function SendProduct() {
     } else {
       dispatch(setData({amount: parseInt(d[0].distance / 1000 * 5)}))
     }
-  },[data.addressFrom, data.addressTo])
+  }, [data.addressFrom, data.addressTo])
 
   function confirm() {
     if (!validated(rules, data)) return

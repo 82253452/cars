@@ -11,8 +11,10 @@ export default {
     'pages/companyCertification/index',
     'pages/shop/index',
     'pages/driver/index',
-    'pages/driverIndex/index',
     'pages/transCompany/index',
+    'pages/shopDetail/index',
+    'pages/shopOrderList/index',
+    'pages/shopOrderDetail/index',
   ],
   permission: {
     "scope.userLocation": {
