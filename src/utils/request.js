@@ -29,7 +29,7 @@ export async function requestBase(data, auth = true) {
         reject(res)
         return
       }
-      if (res.data.code === 100) {
+      if (res.data.code === 100 || res.data.code === 3) {
         try {
           await getUserInfo()
           await request(data, auth).then(resd => resolve(resd))

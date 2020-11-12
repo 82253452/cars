@@ -72,7 +72,7 @@ function PanelBlock({d, id}) {
   })
 
   return <View className={`item_observer_${id}`} id={id}>
-    {isShow ? <Panel>
+    {isShow ? <Panel style={{padding:'20rpx 0'}}>
       <View className='item' onClick={() => toDetail(d)}>
         <View className='header'>
           <View className='header_left'>
