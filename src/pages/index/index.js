@@ -1,5 +1,5 @@
 import {setData} from "@/actions/order";
-import {BANNER_LIST, CAR_LIST, ORDER_SUBMIT} from "@/api";
+import {BANNER_LIST, CAR_LIST, INDEX_MESSAGE, ORDER_STATUS_LIST, ORDER_SUBMIT} from "@/api";
 import {useMapDirectionSdkEffect, useMapLocationSdk} from "@/common/useMapLocationSdk";
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
@@ -14,7 +14,7 @@ import gonggao from '@/img/gonggao.png'
 import shouhuo from '@/img/shouhuo.png'
 import tianjia from '@/img/tianjia.png'
 import tujing from '@/img/tujing.png'
-import {useQuery} from '@/react-query'
+import {useInfiniteQuery, useQuery} from '@/react-query'
 import {request} from "@/utils/request";
 import {validated} from "@/utils/utils";
 import {Image, Swiper, SwiperItem, Text, View} from '@tarojs/components'
@@ -49,23 +49,25 @@ export default function () {
 }
 
 function Notice() {
+  const {data = []} = useInfiniteQuery(INDEX_MESSAGE, (key, page = 1) => request(INDEX_MESSAGE, {page}), {
+    getFetchMore: lastGroup => lastGroup.nextPage
+  })
+
+  function toCentent(id) {
+    Taro.navigateTo({url: `/pages/content/index?id=${id}`})
+  }
+
   return <Swiper className='notice_swiper'
     autoplay
     circular
     vertical
   >
-    <SwiperItem>
+    {data.map((r, i) => r.list.map((d, j) => <SwiperItem onClick={()=>toCentent(d.id)}>
       <View className='notice'>
         <Image src={gonggao} style={{width: '38rpx', height: '32rpx'}} />
-        <Text>【物流】想要物流跨域搬家？这些额外收费要了解</Text>
+        <Text style={{paddingLeft: '20rpx'}}>{d.title}</Text>
       </View>
-    </SwiperItem>
-    <SwiperItem>
-      <View className='notice'>
-        <Image src={gonggao} style={{width: '38rpx', height: '32rpx'}} />
-        <Text>【物流】想要物22222</Text>
-      </View>
-    </SwiperItem>
+    </SwiperItem>))}
   </Swiper>
 }
 
@@ -167,7 +169,7 @@ function Content() {
   const data = useSelector(state => state.order)
   const dispatch = useDispatch()
 
-  return <Panel  style={{padding: '30rpx 20rpx 0 0'}}>
+  return <Panel style={{padding: '30rpx 20rpx 0 0'}}>
     <PanelItemSelect title='车型' placeHolder='请选择车型' range={cars.list.map(c => c.title)}
       value={cars.list.find(c => c.id === data.carTypeId)?.title}
       onChange={v => {

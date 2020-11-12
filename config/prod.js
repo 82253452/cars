@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    BASE_API: '"https://mass.zhihuizhan.net/api"'
+    BASE_API: '"https://mass.doatu.com"'
   },
   defineConstants: {},
   mini: {},

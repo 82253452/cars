@@ -35,5 +35,8 @@ export const PRODUCT_Detail = "/api/product/detail"
 
 export const PRODUCT_ORDER_SUBMIT = "/api/productOrder/submit"
 
+export const INDEX_MESSAGE = "/homeMessage/list"
+export const INDEX_MESSAGE_DETAIL = "/homeMessage/detail"
+
 
 

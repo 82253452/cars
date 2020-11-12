@@ -49,9 +49,13 @@ export default function () {
 }
 
 function Header() {
+  function toOrder(){
+    Taro.navigateTo({url: '/pages/shopOrderList/index'})
+  }
+
   return <Panel style={{marginTop:'-45rpx',padding:'40rpx 0'}}>
     <View className='header_nav'>
-      <View className='item'>
+      <View className='item' onClick={toOrder}>
         <Image src={dingdan2} style={{width: '76rpx', height: '82rpx'}} />
         <Text>全部订单</Text>
       </View>

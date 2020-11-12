@@ -15,6 +15,7 @@ export default {
     'pages/shopDetail/index',
     'pages/shopOrderList/index',
     'pages/shopOrderDetail/index',
+    'pages/content/index',
   ],
   permission: {
     "scope.userLocation": {

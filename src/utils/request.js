@@ -21,7 +21,6 @@ export async function requestBase(data, auth = true) {
   }
   return new Promise((resolve, reject) => {
     Taro.request(data).then(async res => {
-      console.log(res)
       if (res.statusCode !== 200) {
         await Taro.showToast({
           title: '网络异常',
