@@ -1,7 +1,7 @@
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    BASE_API: '"https://mass.doatu.com"'
+    BASE_API: '"https://super-page.doatu.com/api"'
   },
   defineConstants: {},
   mini: {},
