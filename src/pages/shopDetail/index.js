@@ -1,5 +1,5 @@
-import {PRODUCT_Detail} from "@/api";
-import useForm from "@/common/useForm";
+import {PRODUCT_Detail, PRODUCT_ORDER_SUBMIT} from "@/api";
+import useForm, {useFormContext} from "@/common/useForm";
 import useFormItem from "@/common/useFormItem";
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
@@ -14,11 +14,11 @@ import {request} from "@/utils/request";
 import {Image, Input, Picker, Swiper, SwiperItem, Text, View} from '@tarojs/components'
 import {usePullDownRefresh, useRouter} from "@tarojs/runtime";
 import Taro from "@tarojs/taro";
-import React, {useEffect, useMemo, useRef, useState} from 'react'
-import {useDispatch, useSelector} from "react-redux";
+import React, {useMemo, useRef, useState} from 'react'
+import useEffectOnce from "react-use/lib/useEffectOnce";
+import useUpdateEffect from "react-use/lib/useUpdateEffect";
 
 import './index.less'
-import useEffectOnce from "react-use/lib/useEffectOnce";
 
 export default function () {
 
@@ -26,8 +26,6 @@ export default function () {
 
   const {params} = useRouter()
   const id = parseInt(params.id)
-  const user = useSelector(state => state.user)
-  const dispatch = useDispatch()
 
   const {data = {}, refetch} = useQuery([PRODUCT_Detail, id], () => request(PRODUCT_Detail, {id}))
 
@@ -36,15 +34,8 @@ export default function () {
     await refetch()
     Taro.stopPullDownRefresh()
   })
-  const {Form,meta:{isValid},handleSubmit} = useForm()
+  const {Form, meta: {isValid}, handleSubmit} = useForm()
 
-  function handleButton(id) {
-    // Taro.showModal({title: '确定兑换商品?'}).then(({confirm}) => {
-    //   confirm && request(PRODUCT_ORDER_SUBMIT, {id}).then(() => {
-    //     Taro.showToast({title: '兑换成功', icon: 'none'})
-    //   })
-    // })
-  }
 
   return (
     <NavBar back home title='商品详情' viewBackGround='#F3F5F4'>
@@ -59,7 +50,7 @@ export default function () {
             </View>
           </View>
           <Detail content={data.detail} />
-          <Buttons isValid={isValid} handleSubmit={handleSubmit} price={data.price} />
+          <Buttons isValid={isValid} handleSubmit={handleSubmit} price={data.price} id={data.id} />
         </Form>
       </View>
     </NavBar>
@@ -89,10 +80,17 @@ function Detail({content}) {
 
 const productAttribute = ['接单高', '驾龄长', '信誉高']
 
-function Buttons({price = 0,isValid,handleSubmit}) {
+function Buttons({price = 0, isValid, handleSubmit, id}) {
+  console.log('id',id)
   const panelRef = useRef()
-  const [droggle,setDroggle] = useState(false)
-  const text = useMemo(()=>droggle?'确定':'立即兑换',[droggle])
+  const [droggle, setDroggle] = useState(false)
+  const text = useMemo(() => droggle ? '确定' : '立即兑换', [droggle])
+
+  const {data, setData} = useFormContext()
+
+  useUpdateEffect(() => {
+    data.num && setData({...data, amount: price * data.num})
+  }, [data.num])
 
   const addressProps = useFormItem('address', {
     required: true,
@@ -115,12 +113,17 @@ function Buttons({price = 0,isValid,handleSubmit}) {
 
 
   function submit() {
-    if(!droggle){
+    if (!droggle) {
       panelRef.current.openPanel()
-    }else{
-      handleSubmit().then(d=>{
-        console.log(d)
-      }).catch(err=>{
+    } else {
+      handleSubmit().then(d => {
+        Taro.showModal({title: '确定兑换商品?'}).then(({confirm}) => {
+          confirm && request(PRODUCT_ORDER_SUBMIT, {...d, id:id,num:d.num || 1}).then(async () => {
+            await Taro.showToast({title: '兑换成功', icon: 'none'})
+            await Taro.reLaunch({url: '/pages/shopOrderList/index'})
+          })
+        })
+      }).catch(err => {
         console.log(err)
       })
       console.log(isValid)
@@ -128,7 +131,9 @@ function Buttons({price = 0,isValid,handleSubmit}) {
   }
 
   return <View className='fix_block'>
-    <Panel ref={panelRef} animationShowHidden='zoomOutDownNone' animation show={false} callBack={(d)=>setDroggle(d)}>
+    <Panel ref={panelRef} animationShowHidden='zoomOutDownNone' animation show={false}
+      callBack={(d) => setDroggle(d)}
+    >
       <Close panelRef={panelRef} />
       <FormItemAddressSelect  {...addressProps} cacheKey='product_address' />
       <FormNumtItem title='数量' {...numProps} />
@@ -137,7 +142,7 @@ function Buttons({price = 0,isValid,handleSubmit}) {
       <FormInputItem title='备注' {...remarkProps} />
     </Panel>
     <View className='bottom'>
-      <View className='price'>积分<Text>{price}</Text></View>
+      <View className='price'>积分<Text>{data.amount || price}</Text></View>
       <View className='button' onClick={submit}>
         {text}
       </View>
@@ -145,13 +150,19 @@ function Buttons({price = 0,isValid,handleSubmit}) {
   </View>
 }
 
-function FormItemAddressSelect({style, value, placeholder, onBlur,cacheKey}) {
+function FormItemAddressSelect({style, value, placeholder, onBlur, cacheKey}) {
+  const {data, setData} = useFormContext()
   const [address = [], setAddress] = useState()
   useEffectOnce(() => {
-    Taro.getStorage({key:cacheKey}).then(res => {
+    Taro.getStorage({key: cacheKey}).then(res => {
       res && res.data && setAddress(res.data)
     })
   })
+
+  useUpdateEffect(() => {
+    data.address.user.phone && setData({...data, phone: data.address.user.phone})
+  }, [data.address])
+
   function toAddress() {
     Taro.eventCenter.on('setAddress', (d) => {
         address.push(d)
@@ -161,14 +172,17 @@ function FormItemAddressSelect({style, value, placeholder, onBlur,cacheKey}) {
     )
     Taro.navigateTo({url: '/pages/address/index'})
   }
+
   return <PanelItem style={{marginLeft: '20rpx'}}>
     <View className='form-item-address-container' style={style}>
-      <View style={{width: `44rpx`, height: `44rpx`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      <View
+        style={{width: `44rpx`, height: `44rpx`, display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+      >
         <Image src={fahuo} style={{width: `${44}rpx`, height: `${44}rpx`}} />
       </View>
       <View className='border-view'>
         <Picker className='picker' mode='selector' range={address.length ? address.map(a => a.location.name) : ['无']}
-          onChange={event => address.length&&onBlur({target:{value:address[event.detail.value]}})}
+          onChange={event => address.length && onBlur({target: {value: address[event.detail.value]}})}
         >
           <Text
             className={value ? 'text' : 'placeHolder'}
@@ -196,7 +210,13 @@ function Close({panelRef}) {
   }
 
   return <View
-    style={{width: '100%', display: 'flex', justifyContent: "center", alignItems: 'center', padding: '10px 0 10rpx 0'}}
+    style={{
+      width: '100%',
+      display: 'flex',
+      justifyContent: "center",
+      alignItems: 'center',
+      padding: '10px 0 10rpx 0'
+    }}
     onClick={drogglePanel}
   >
     <Image src={zhedie} style={{width: '96rpx  ', height: '8rpx'}} />
@@ -222,7 +242,9 @@ function FormNumtItem({title, value = 1, onBlur}) {
         onClick={() => handleChange(-1)}
       />
       <View>{value}</View>
-      <Image src={jia} style={{width: '52rpx', height: '52rpx', marginLeft: '30rpx'}} onClick={() => handleChange(1)} />
+      <Image src={jia} style={{width: '52rpx', height: '52rpx', marginLeft: '30rpx'}}
+        onClick={() => handleChange(1)}
+      />
     </View>
   </PanelItem>
 }
@@ -231,9 +253,9 @@ function FormMultipleSelect({title, value, onBlur}) {
   return <PanelItem style={{marginLeft: '20rpx', paddingRight: '20rpx'}}>
     <View className='title'>{title}</View>
     <View className='form_buttons'>
-      {productAttribute.map((r, i) => <View onClick={() => {
-        onBlur({target: {value: i}})
-      }} className={`button ${value === i ? 'button_active' : ''}`}
+      {productAttribute.map((r) => <View onClick={() => {
+        onBlur({target: {value: r}})
+      }} className={`button ${value === r ? 'button_active' : ''}`}
       >
         <Text>{r}</Text>
       </View>)}

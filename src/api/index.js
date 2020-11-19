@@ -28,12 +28,15 @@ export const TRANS_COMPANY_ATTACH = "/trans/attachCompany"
 
 export const COMPANY_CERT = "/api/company/certCompany POST"
 
+export const DRIVER_CERT = "/api/driver/register POST"
+
 export const BANNER_LIST = "/api/banner/list"
 
 export const PRODUCT_LIST = "/api/product/list"
 export const PRODUCT_Detail = "/api/product/detail"
 
-export const PRODUCT_ORDER_SUBMIT = "/api/productOrder/submit"
+export const PRODUCT_ORDER_LIST = "/api/productOrder/list"
+export const PRODUCT_ORDER_SUBMIT = "/api/productOrder/submit POST"
 
 export const INDEX_MESSAGE = "/homeMessage/list"
 export const INDEX_MESSAGE_DETAIL = "/homeMessage/detail"

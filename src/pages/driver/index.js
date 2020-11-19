@@ -1,4 +1,4 @@
-import {CAR_LIST, COMPANY_CERT} from "@/api";
+import {CAR_LIST, COMPANY_CERT, DRIVER_CERT} from "@/api";
 import NavBar from "@/components/NavBar";
 import Panel from '@/components/Panel'
 import PanelItemImage from '@/components/PanelItemImage'
@@ -6,19 +6,62 @@ import PanelItemInputNew from '@/components/PanelItemInputNew'
 import PanelItemSelect from "@/components/PanelItemSelect";
 import {useQuery} from "@/react-query/react";
 import {request} from "@/utils/request";
+import {validated} from "@/utils/utils";
 import {View} from "@tarojs/components";
+import Taro from '@tarojs/taro'
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
+
 import './index.less'
 
 export default function () {
 
   const user = useSelector(state => state.user)
-  const {data: cars = {list: []}} = useQuery(CAR_LIST, () => request(CAR_LIST))
-  const [data = {}, setData] = useState(user.company)
-
+    const {data: cars = {list: []}} = useQuery(CAR_LIST, () => request(CAR_LIST))
+  const [data, setData] = useState(user.driver || {})
+  const rules = {
+    name: {
+      require: true,
+      message: '请输入姓名'
+    },
+    phone: {
+      require: true,
+      message: '请输入手机号'
+    },
+    carNumber: {
+      require: true,
+      message: '请输入车牌号'
+    },
+    drivingExperience: {
+      require: true,
+      message: '请输入驾龄'
+    },
+    carModel: {
+      require: true,
+      message: '请选择车型'
+    },
+    userImg: {
+      require: true,
+      message: '请上传本人照片'
+    },
+    carImg: {
+      require: true,
+      message: '请上传汽车照片'
+    },
+    driversLicense: {
+      require: true,
+      message: '请上传驾驶本照片'
+    },
+    drivingLicense: {
+      require: true,
+      message: '请上传行驶本照片'
+    }
+  }
   async function handleSubmit() {
-    await request(COMPANY_CERT, data)
+    if (validated(rules, data)) {
+      await request(DRIVER_CERT, data)
+      await Taro.navigateBack()
+    }
   }
 
   return <NavBar title='司机认证' back home viewBackGround='#fff'>
@@ -30,8 +73,8 @@ export default function () {
           <PanelItemInputNew title='驾龄' type='number' value={data.drivingExperience} placeholder='请输入驾龄' onChange={e=>setData({...data,drivingExperience:e})} />
           <PanelItemInputNew title='物流公司代码' value={data.transCode} placeholder='请输入物流公司代码' onChange={e=>setData({...data,transCode:e})} />
           <PanelItemSelect title='车型' placeHolder='请选择车型' range={cars.list.map(c => c.title)}
-            value={cars.list.find(c => c.id === data.carTypeId)?.title}
-            onChange={v => {console.log(v)}}
+            value={cars.list.find(c => c.id === data.carModel)?.title}
+            onChange={v => setData({...data,carModel:cars.list[v].id})}
           />
         </Panel>
 

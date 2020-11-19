@@ -1,7 +1,7 @@
-import {ORDER_STATUS_LIST} from "@/api";
+import {PRODUCT_ORDER_LIST} from "@/api";
 import Panel from "@/components/Panel";
-import SwiperScroll from "@/components/SwiperScroll";
 import Skeleton from "@/components/Skeleton";
+import SwiperScroll from "@/components/SwiperScroll";
 import gengduo from "@/img/gengduo.png";
 import shangcheng from "@/img/shangcheng.png";
 import {useInfiniteQuery} from "@/react-query/react";
@@ -80,7 +80,7 @@ function PanelBlock({d, id}) {
             <View className='title'>积分商城兑换</View>
           </View>
           <View className='header_right'>
-            <View className='status'>待配送</View>
+            <View className='status'>{{0:'待发货',1:'运送中',2:'已完成'}[d.status]}</View>
             <Image src={gengduo} style={{width: `12rpx`, height: `22rpx`, marginLeft: '10rpx'}} />
           </View>
         </View>
@@ -92,12 +92,12 @@ function PanelBlock({d, id}) {
               />
             </View>
             <View className='details'>
-              <Text className='name'>华为 HUAWEI Mate 30 麒麟旗舰990旗舰芯片</Text>
+              <Text className='name'>{d.productName}</Text>
               <View className='detail'>
-                <Text>数量：1</Text>
-                <Text>属性：白色框</Text>
+                <Text>数量：{d.num||1}</Text>
+                <Text style={{marginLeft:'30rpx'}}>属性：{d.attribute}</Text>
               </View>
-              <View className='price'>2888积分</View>
+              <View className='price'>{d.amount}{d.orderType===0?'积分':'￥'}</View>
             </View>
           </View>
         </View>
@@ -108,7 +108,7 @@ function PanelBlock({d, id}) {
 
 function AllListView({swiperRef}) {
   console.log('AllListCurrentView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(PRODUCT_ORDER_LIST, (key, page = 1) => request(PRODUCT_ORDER_LIST, {page}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={0}
@@ -118,7 +118,7 @@ function AllListView({swiperRef}) {
 
 function DeliveringView({swiperRef}) {
   console.log('DeliveringView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([PRODUCT_ORDER_LIST,0], (key, page = 1) => request(PRODUCT_ORDER_LIST, {page,status:0}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={1}
@@ -128,7 +128,7 @@ function DeliveringView({swiperRef}) {
 
 function ReceivingView({swiperRef}) {
   console.log('ReceivingView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([PRODUCT_ORDER_LIST,1], (key, page = 1) => request(PRODUCT_ORDER_LIST, {page,status:1}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={2}
@@ -138,7 +138,7 @@ function ReceivingView({swiperRef}) {
 
 function FinalView({swiperRef}) {
   console.log('FinalView')
-  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery(ORDER_STATUS_LIST, (key, page = 1) => request(ORDER_STATUS_LIST, {page}), {
+  const {data = [], fetchMore, canFetchMore, refetch} = useInfiniteQuery([PRODUCT_ORDER_LIST,2], (key, page = 1) => request(PRODUCT_ORDER_LIST, {page,status:2}), {
     getFetchMore: lastGroup => lastGroup.nextPage
   })
   return <ListView data={data} fetchMore={fetchMore} canFetchMore={canFetchMore} refetch={refetch} index={3}
