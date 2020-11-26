@@ -9,7 +9,7 @@ import './index.less'
 
 export default function Index({max = 9, onChange, children, style, width=124, height=124, close, value,demo}) {
   // const url = 'https://kan-jian.oss-cn-beijing.aliyuncs.com'
-  const url = 'http://img.zhihuizhan.net'
+  const url = 'http://img.gz2c.com'
   const [images, setImages] = useState(value ? value.split(',') : []);
 
 

@@ -6,7 +6,6 @@ import PanelItemInputNew from "@/components/PanelItemInputNew";
 import {request} from "@/utils/request";
 import {validated} from "@/utils/utils";
 import {View} from "@tarojs/components";
-import Taro from "@tarojs/taro";
 import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import './index.less'
@@ -15,7 +14,7 @@ export default function () {
 
   const user = useSelector(state => state.user)
 
-  const [data, setData] = useState(user.company || {})
+  const [data = {}, setData] = useState(user.company)
 
   const rules = {
     name: {
@@ -53,25 +52,22 @@ export default function () {
   }
 
   async function handleSubmit() {
-    if (validated(rules, data)) {
-      await request(COMPANY_CERT, data)
-      await Taro.navigateBack()
-    }
+    validated(rules,data) && await request(COMPANY_CERT, data)
   }
 
   return <NavBar title='企业认证' back home viewBackGround='#fff'>
     <View className='container'>
-      <Panel style={{borderRadius: 0, width: '100%'}}>
+      <Panel padding={0} space={0} borderRadius={0}>
         <PanelItemInputNew title='公司名称' value={data.name} placeholder='请输入公司名称'
           onChange={e => setData({...data, name: e})}
         />
-        <PanelItemInputNew title='法人' value={data.legalPerson} placeholder='请输入法人'
+        <PanelItemInputNew title='法人' type='number' value={data.legalPerson} placeholder='请输入法人'
           onChange={e => setData({...data, legalPerson: e})}
         />
         <PanelItemInputNew title='法人联系方式' value={data.legalPhone} placeholder='请输入法人联系方式'
           onChange={e => setData({...data, legalPhone: e})}
         />
-        <PanelItemInputNew title='负责人' value={data.contactsPerson} placeholder='请输入负责人'
+        <PanelItemInputNew title='负责人' type='number' value={data.contactsPerson} placeholder='请输入负责人'
           onChange={e => setData({...data, contactsPerson: e})}
         />
         <PanelItemInputNew title='负责人联系方式' value={data.contactsPhone} placeholder='请输入负责人联系方式'
@@ -85,7 +81,7 @@ export default function () {
         />
       </Panel>
 
-      <Panel style={{borderRadius: 0, width: '100%'}}>
+      <Panel padding={0} space={0} borderRadius={0}>
         <PanelItemImage title='营业执照' desc='正面照清晰无遮挡' value={data.businessLicense}
           onChange={e => setData({...data, businessLicense: e})}
         />

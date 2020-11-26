@@ -43,7 +43,7 @@ export default function () {
   return <NavBar title='物流公司' back home>
     <View className='container'>
       {data.map(d => d.list.map(l => <View className='item'>
-        <Image className='img' src='http://img.zhihuizhan.net/Fp2ZUDI8Pchr-y_h7g8QKZt6LoeN' />
+        <Image className='img' src='http://img.gz2c.com/Fp2ZUDI8Pchr-y_h7g8QKZt6LoeN' />
         <View className='info'>
           <Text className='title'>{l.name}</Text>
           <Text className='desc'>{l.address}</Text>

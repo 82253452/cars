@@ -32,7 +32,7 @@ export default {
   tabBar: {
     borderStyle: 'white',
     selectedColor:'#CE0801',
-    color:' #7F8389',
+    color:'#7F8389',
     list: [{
       text: '首页',
       iconPath: 'img/shouyeb.png',
